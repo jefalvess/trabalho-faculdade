@@ -81,7 +81,7 @@ cron.schedule("0 * * * *", async () => {
   bot.telegram.sendMessage(chatId, `ESTOU FUNCIONANDO CORRETAMENTE ${currentTime}`);
 });
 
-cron.schedule("* * * * * *", async () => {
+cron.schedule("* * * * *", async () => {
   executarJOB();
 });
 
