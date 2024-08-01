@@ -14,7 +14,7 @@ async function addToCache(string) {
 }
 
 async function isInCache(string) {
-  return await cache.has(string);
+  return cache.has(string);
 }
 
 async function readAndLogMessages(mensagens) {
@@ -23,10 +23,10 @@ async function readAndLogMessages(mensagens) {
     const intervalId = setInterval(async () => {
       if (index < mensagens.length) {
         let string = `\nGanho: ${mensagens[index]['ganho']}\nJogo: ${mensagens[index]['jogo']} | ${mensagens[index]["modalidade"]} | data : ${mensagens[index]['data']}\nAposte: (${mensagens[index].bet1}) ${mensagens[index]['fazer1']} -> ${mensagens[index]['old1']}\nAposte: (${mensagens[index]['bet2']}) ${mensagens[index]['fazer2']} -> ${mensagens[index]['old2']}\nhá ${mensagens[index]["descoberta"]}`;
-        let key = `${mensagens[index]['bet1']}) ${mensagens[index]['fazer1']}`
-        if (!(await isInCache(key))) {
+        let key = `${mensagens[index]['bet1']})-${mensagens[index]['fazer1']}`
+        if (await isInCache(Buffer.from(key).toString('base64')) == false) {
           await bot.telegram.sendMessage(chatId, string);
-          addToCache(key);
+          addToCache(Buffer.from(key).toString('base64'));
         }
         index++;
       } else {
@@ -82,7 +82,7 @@ cron.schedule("0 * * * *", async () => {
   bot.telegram.sendMessage(chatId, `ESTOU FUNCIONANDO CORRETAMENTE ${currentTime}`);
 });
 
-cron.schedule("* * * * *", async () => {
+cron.schedule("* * * * * *", async () => {
   executarJOB();
 });
 
