@@ -4,6 +4,7 @@ const cron = require("node-cron");
 const readAndLogHtmlFile = require("./models/buscarOLDS");
 const fetchAndSaveHtml = require("./models/criarHTML");
 const redis = require("./models/redisClient");
+const { message } = require("telegraf/filters");
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const chatId = parseInt(process.env.GRUPO_ID);
@@ -13,14 +14,12 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 3000;
 
-
 app.use(express.json());
 
 // Rota básica de teste
 app.get("/work", (req, res) => {
   res.send("Servidor Express está funcionando!");
 });
-
 
 async function getStringFromCache(key) {
   try {
@@ -59,6 +58,11 @@ async function readAndLogMessages(mensagens) {
           await bot.telegram.sendMessage(chatId, string);
           cacheString(Buffer.from(key).toString("base64"), "string");
         }
+
+        const currentTime1 = await getCurrentTime();
+        const chatId2 = parseInt(-4279611369);
+        bot.telegram.sendMessage(chatId2, `RODEI O JOB ${currentTime1}`);
+
         index++;
       } else {
         clearInterval(intervalId);
@@ -90,32 +94,31 @@ async function executarJOB() {
   }
 }
 
-// roda a cada 30 segundo avisando que esta funcionando
-if (process.env.ENV === "prod") {
-  cron.schedule("* * * * *", async () => {
-    // -4279611369 - prod e local memso id de sala'
-    const currentTime = await getCurrentTime();
-    const chatId2 = parseInt(-4279611369);
-    bot.telegram.sendMessage(chatId2, `RODEI O JOB ${currentTime}`);
-  });
-}
-
-// roda a cada minuto esperando dados
-cron.schedule("* * * * *", async () => {
-  executarJOB();
-});
-
-bot.on("text", async (ctx) => {
+bot.on(message("text"), async (ctx) => {
   if (
-    ctx.message.chat.id.toString() === chatId &&
+    ctx.message.chat.id === chatId &&
     ctx.message.text.toLowerCase() === "buscar"
   ) {
     ctx.reply("To trabalhando corretamente");
   }
 });
 
-bot.launch();
+// roda a cada minuto esperando dados
+cron.schedule("* * * * *", async () => {
+  executarJOB();
+});
 
+
+if (process.env.ENV !== "prod") {
+  bot.launch();
+} else {
+  bot.launch({
+    webhook: {
+      domain: "https://trabalho-faculdade-1.onrender.com/",
+      port: port,
+    },
+  });
+}
 
 // Inicializa o servidor Express
 app.listen(port, () => {
