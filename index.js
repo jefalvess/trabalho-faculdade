@@ -96,11 +96,9 @@ bot.on("text", async (ctx) => {
   }
 });
 
+bot.telegram.sendMessage(chatId, `OLA EU FUI INICIADO COM SUCESSO\n\n\n\n\n\n\n`);
+
 bot.launch();
 
 process.once("SIGINT", () => bot.stop("SIGINT"));
 process.once("SIGTERM", () => bot.stop("SIGTERM"));
-
-executarJOB();
-
-
