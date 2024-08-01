@@ -20,7 +20,7 @@ app.use(express.json());
 app.get("/work", async (req, res) => {
   const currentTime1 = await getCurrentTime();
   const chatId2 = parseInt(-4279611369);
-  bot.telegram.sendMessage(chatId2, `RODEI O JOB ${currentTime1}`);
+  bot.telegram.sendMessage(chatId2, `ROUTE WORK ${currentTime1}`);
   res.send("Servidor Express está funcionando!");
 });
 
@@ -112,16 +112,16 @@ cron.schedule("* * * * *", async () => {
 });
 
 
-if (process.env.ENV !== "prod") {
+// if (process.env.ENV !== "prod") {
   bot.launch();
-} else {
-  bot.launch({
-    webhook: {
-      domain: "https://trabalho-faculdade-1.onrender.com",
-      port: 8080,
-    },
-  });
-}
+// } else {
+//   bot.launch({
+//     webhook: {
+//       domain: "https://trabalho-faculdade-1.onrender.com",
+//       port: 8080,
+//     },
+//   });
+// }
 
 // Inicializa o servidor Express
 app.listen(port, () => {
