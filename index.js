@@ -7,7 +7,7 @@ const NodeCache = require('node-cache');
 const cache = new NodeCache({ stdTTL: 3600 * 8 });
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
-const chatId = "-4100842257";
+const chatId = process.env.GRUPO_ID;
 
 async function addToCache(string) {
   cache.set(string, true);
