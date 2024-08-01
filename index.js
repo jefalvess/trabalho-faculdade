@@ -19,16 +19,6 @@ async function setWebhook() {
   }
 }
 
-// Função para remover o webhook
-async function removeWebhook() {
-  try {
-    const response = await bot.telegram.deleteWebhook();
-    console.log('Webhook removido:', response);
-  } catch (error) {
-    console.error('Erro ao remover o webhook:', error);
-  }
-}
-
 // Função para obter informações do webhook
 async function getWebhookInfo() {
   try {
@@ -40,15 +30,17 @@ async function getWebhookInfo() {
 }
 
 // Configuração inicial
-if (process.env.ENV === 'prod') {
-  (async function() {
-    await removeWebhook(); // Remove webhook existente
-    await setWebhook();    // Configura o novo webhook
-    await getWebhookInfo(); // Obtém informações do webhook
-  })();
-  const webhookUrl = `${process.env.URL}/bot${process.env.BOT_TOKEN}`;
-  bot.telegram.setWebhook(webhookUrl);
-}
+// Configuração do webhook
+(async function() {
+  if (process.env.ENV === "prod") {
+    // Configura o webhook somente em produção
+    await setWebhook();
+    await getWebhookInfo();
+  } else {
+    // Inicializa o bot com polling em ambientes não-prod
+    bot.launch().catch(console.error);
+  }
+})();
 
 const chatId = parseInt(process.env.GRUPO_ID);
 
@@ -157,10 +149,6 @@ cron.schedule("* * * * *", async () => {
   executarJOB();
 });
 
-
-if (process.env.ENV !== "prod") {
-  bot.launch();
-}
 
 // Inicializa o servidor Express
 app.listen(port, () => {
