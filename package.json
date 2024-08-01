@@ -15,15 +15,9 @@
     "axios": "^1.7.2",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "html-template-engine": "^0.0.5",
-    "ioredis": "^5.4.1",
-    "js-beautify": "^1.15.1",
     "jsdom": "^24.1.1",
-    "mongodb": "^6.8.0",
-    "node-cache": "^5.1.2",
     "node-cron": "^3.0.3",
     "nodemon": "^3.1.4",
-    "prettier": "^3.3.3",
     "redis": "^4.7.0",
     "telegraf": "^4.16.3"
   }
