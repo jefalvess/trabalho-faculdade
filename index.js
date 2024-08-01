@@ -96,7 +96,7 @@ bot.on("text", async (ctx) => {
   }
 });
 
-bot.telegram.sendMessage(chatId, `OLA EU FUI INICIADO COM SUCESSO\n\n\n\n\n\n\n`);
+bot.telegram.sendMessage(chatId, `OLA EU FUI INICIADO COM SUCESSO \n \n \n \n \n \n \n \n \n.`);
 
 bot.launch();
 
