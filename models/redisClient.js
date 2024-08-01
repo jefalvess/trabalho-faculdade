@@ -5,7 +5,7 @@ const redis = require('redis');
 const client = redis.createClient({
   url: process.env.URL_REDIS,
   socket: {
-    tls: true, // Ativa a conexão segura (TLS/SSL)
+    tls: false, // Ativa a conexão segura (TLS/SSL)
     rejectUnauthorized: false // Permite certificados autoassinados, ajuste conforme necessário
   }
 });
@@ -13,5 +13,6 @@ const client = redis.createClient({
 // Manipuladores de eventos
 client .on('error', err => console.log('Redis Client Error', err))
 .connect();
+// client.flushDb();
 
 module.exports = client;
