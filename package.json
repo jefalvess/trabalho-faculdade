@@ -1,0 +1,27 @@
+{
+  "name": "teste",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.2",
+    "dotenv": "^16.4.5",
+    "html-template-engine": "^0.0.5",
+    "js-beautify": "^1.15.1",
+    "jsdom": "^24.1.1",
+    "mongodb": "^6.8.0",
+    "node-cache": "^5.1.2",
+    "node-cron": "^3.0.3",
+    "nodemon": "^3.1.4",
+    "prettier": "^3.3.3",
+    "telegraf": "^4.16.3"
+  }
+}
