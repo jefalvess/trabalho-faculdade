@@ -24,9 +24,10 @@ async function getStringFromCache(key) {
 
 async function cacheString(key, value) {
   try {
-    const ttl = 28800; // 8 horas em segundos
-    await redis.set(key, value, 'EX', ttl);
-
+    if(process.env.ENv === 'prod' ){ 
+      const ttl = 28800; // 8 horas em segundos
+      await redis.set(key, value, 'EX', ttl);
+    }
   } catch (err) {
     console.error("Erro ao inserir string no cache:", err);
   }
