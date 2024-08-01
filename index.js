@@ -3,18 +3,31 @@ const { Telegraf } = require("telegraf");
 const cron = require("node-cron");
 const readAndLogHtmlFile = require("./models/buscarOLDS");
 const fetchAndSaveHtml = require("./models/criarHTML");
-const NodeCache = require("node-cache");
-const cache = new NodeCache({ stdTTL: 3600 * 8 });
+const redis = require("./models/redisClient");
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 const chatId = process.env.GRUPO_ID;
 
-async function addToCache(string) {
-  cache.set(string, true);
+async function getStringFromCache(key) {
+  try {
+    const value = await redis.get(key);
+    if (value === null) {
+      return false;
+    } else {
+      return value;
+    }
+  } catch (err) {
+    console.log(err)
+    return false;
+  }
 }
 
-async function isInCache(string) {
-  return cache.has(string);
+async function cacheString(key, value) {
+  try {
+    await redis.set(key, value);
+  } catch (err) {
+    console.error("Erro ao inserir string no cache:", err);
+  }
 }
 
 async function readAndLogMessages(mensagens) {
@@ -24,9 +37,12 @@ async function readAndLogMessages(mensagens) {
       if (index < mensagens.length) {
         let string = `\nGanho: ${mensagens[index]["ganho"]}\nJogo: ${mensagens[index]["jogo"]} | ${mensagens[index]["modalidade"]} | data : ${mensagens[index]["data"]}\nAposte: (${mensagens[index].bet1}) ${mensagens[index]["fazer1"]} -> ${mensagens[index]["old1"]}\nAposte: (${mensagens[index]["bet2"]}) ${mensagens[index]["fazer2"]} -> ${mensagens[index]["old2"]}\nhá ${mensagens[index]["descoberta"]}`;
         let key = `${mensagens[index]["bet1"]})-${mensagens[index]["fazer1"]}`;
-        if ((await isInCache(Buffer.from(key).toString("base64"))) == false) {
+        if (
+          (await getStringFromCache(Buffer.from(key).toString("base64"))) ==
+          false
+        ) {
           await bot.telegram.sendMessage(chatId, string);
-          addToCache(Buffer.from(key).toString("base64"));
+          cacheString(Buffer.from(key).toString("base64"), "string");
         }
         index++;
       } else {
