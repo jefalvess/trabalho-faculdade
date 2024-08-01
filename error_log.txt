@@ -1,5 +1,0 @@
-{
-  "stack": "TypeError [ERR_INVALID_CALLBACK]: Callback must be a function. Received 'utf8'\n    at maybeCallback (node:fs:181:3)\n    at Object.writeFile (node:fs:2150:14)\n    at fetchAndSaveHtml (/Users/jefersonluisalvesdesouza/Desktop/teste/models/criarHTML.js:39:14)\n    at processTicksAndRejections (node:internal/process/task_queues:96:5)\n    at async executarJOB (/Users/jefersonluisalvesdesouza/Desktop/teste/index.js:56:3)",
-  "message": "Callback must be a function. Received 'utf8'",
-  "code": "ERR_INVALID_CALLBACK"
-}
