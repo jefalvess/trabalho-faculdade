@@ -14,6 +14,7 @@
   "dependencies": {
     "axios": "^1.7.2",
     "dotenv": "^16.4.5",
+    "express": "^4.19.2",
     "html-template-engine": "^0.0.5",
     "ioredis": "^5.4.1",
     "js-beautify": "^1.15.1",

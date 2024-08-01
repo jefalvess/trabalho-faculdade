@@ -6,7 +6,21 @@ const fetchAndSaveHtml = require("./models/criarHTML");
 const redis = require("./models/redisClient");
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
-const chatId = process.env.GRUPO_ID;
+const chatId = parseInt(process.env.GRUPO_ID);
+
+const express = require("express");
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+
+app.use(express.json());
+
+// Rota básica de teste
+app.get("/work", (req, res) => {
+  res.send("Servidor Express está funcionando!");
+});
+
 
 async function getStringFromCache(key) {
   try {
@@ -101,6 +115,12 @@ bot.on("text", async (ctx) => {
 });
 
 bot.launch();
+
+
+// Inicializa o servidor Express
+app.listen(port, () => {
+  console.log(`Servidor Express está rodando na porta ${port}`);
+});
 
 process.once("SIGINT", () => bot.stop("SIGINT"));
 process.once("SIGTERM", () => bot.stop("SIGTERM"));
