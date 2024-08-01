@@ -65,16 +65,15 @@ async function readAndLogMessages(mensagens) {
           await bot.telegram.sendMessage(chatId, string);
           cacheString(Buffer.from(key).toString("base64"), "string");
         }
-
-        const currentTime1 = await getCurrentTime();
-        const chatId2 = parseInt(-4279611369);
-        bot.telegram.sendMessage(chatId2, `RODEI O JOB ${currentTime1}`);
-
         index++;
       } else {
         clearInterval(intervalId);
       }
     }, 1000 * 5);
+
+    const chatId2 = parseInt(-4279611369);
+    bot.telegram.sendMessage(chatId2, `PROCESSADO COM SUCESSO`);
+
   } catch (error) {
     console.log("erro ao enviar dados");
   }
