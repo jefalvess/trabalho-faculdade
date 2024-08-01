@@ -18,6 +18,10 @@ app.use(express.json());
 
 // Rota básica de teste
 app.get("/work", async (req, res) => {
+  res.send("Servidor Express está funcionando!");
+});
+
+app.get("/test", async (req, res) => {
   const currentTime1 = await getCurrentTime();
   const chatId2 = parseInt(-4279611369);
   bot.telegram.sendMessage(chatId2, `ROUTE WORK ${currentTime1}`);
