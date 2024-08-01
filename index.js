@@ -43,7 +43,6 @@ async function buscarTUDO(mensagens) {
     let index = 0;
     const intervalId = setInterval(async () => {
       if (index < mensagens.length) {
-        console.log(mensagens[index])
         let string = `\nGanho: ${mensagens[index].ganho}\nJogo: ${mensagens[index].jogo} | ${mensagens[index]["modalidade"]} | data : ${mensagens[index].data}\nAposte: (${mensagens[index].bet1}) ${mensagens[index].fazer1} -> ${mensagens[index].old1}\nAposte: (${mensagens[index].bet2}) ${mensagens[index].fazer2} -> ${mensagens[index].old2}\nhá ${mensagens[index]["descoberta"]}`;
         await bot.telegram.sendMessage(chatId, string);
         index++;
