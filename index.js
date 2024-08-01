@@ -63,6 +63,12 @@ app.get("/test", async (req, res) => {
   res.send("Servidor Express está funcionando!");
 });
 
+
+app.post(`/bot${process.env.BOT_TOKEN}`, (req, res) => {
+  bot.handleUpdate(req.body);
+  res.sendStatus(200);
+});
+
 async function getStringFromCache(key) {
   try {
     const value = await redis.get(key);
