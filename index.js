@@ -17,7 +17,10 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 
 // Rota básica de teste
-app.get("/work", (req, res) => {
+app.get("/work", async (req, res) => {
+  const currentTime1 = await getCurrentTime();
+  const chatId2 = parseInt(-4279611369);
+  bot.telegram.sendMessage(chatId2, `RODEI O JOB ${currentTime1}`);
   res.send("Servidor Express está funcionando!");
 });
 
@@ -114,7 +117,7 @@ if (process.env.ENV !== "prod") {
 } else {
   bot.launch({
     webhook: {
-      domain: "https://trabalho-faculdade-1.onrender.com/",
+      domain: "https://trabalho-faculdade-1.onrender.com",
       port: port,
     },
   });
