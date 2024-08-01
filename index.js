@@ -24,7 +24,7 @@ async function getStringFromCache(key) {
 
 async function cacheString(key, value) {
   try {
-    if(process.env.ENv === 'prod' ){ 
+    if(process.env.ENV === "prod"){ 
       const ttl = 28800; // 8 horas em segundos
       await redis.set(key, value, 'EX', ttl);
     }
@@ -39,7 +39,7 @@ async function readAndLogMessages(mensagens) {
     const intervalId = setInterval(async () => {
       if (index < mensagens.length) {
         let string = `\nGanho: ${mensagens[index]["ganho"]}\nJogo: ${mensagens[index]["jogo"]} | ${mensagens[index]["modalidade"]} | data : ${mensagens[index]["data"]}\nAposte: (${mensagens[index].bet1}) ${mensagens[index]["fazer1"]} -> ${mensagens[index]["old1"]}\nAposte: (${mensagens[index]["bet2"]}) ${mensagens[index]["fazer2"]} -> ${mensagens[index]["old2"]}\nhá ${mensagens[index]["descoberta"]}`;
-        let key = `${mensagens[index]["bet1"]})-${mensagens[index]["fazer1"]}`;
+        let key = `${mensagens[index]["bet1"]})-${mensagens[index]["fazer1"]} ${mensagens[index]["ganho"]}`;
         if (
           (await getStringFromCache(Buffer.from(key).toString("base64"))) ==
           false
@@ -80,13 +80,13 @@ async function executarJOB() {
 
 // roda a cada 30 segundo avisando que esta funcionando
 if (process.env.ENV === "prod") {
-  cron.schedule("*/30 * * * * *", async () => {
+  cron.schedule("* * * * *", async () => {
     // -4279611369 - prod e local memso id de sala'
     const currentTime = await getCurrentTime();
     const chatId2 = parseInt(-4279611369);
     bot.telegram.sendMessage(
       chatId2,
-      `ESTOU FUNCIONANDO CORRETAMENTE ${currentTime}`
+      `RODEI O JOB ${currentTime}`
     );
   });
 }
