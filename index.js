@@ -7,10 +7,10 @@ const redis = require("./models/redisClient");
 const { message } = require("telegraf/filters");
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
-// if (process.env.ENV === 'prod') {
-//   const webhookUrl = `${process.env.URL}/bot${process.env.BOT_TOKEN}`;
-//   bot.telegram.setWebhook(webhookUrl);
-// }
+if (process.env.ENV === 'prod') {
+  const webhookUrl = `${process.env.URL}/bot${process.env.BOT_TOKEN}`;
+  bot.telegram.setWebhook(webhookUrl);
+}
 
 const chatId = parseInt(process.env.GRUPO_ID);
 
@@ -120,9 +120,9 @@ cron.schedule("* * * * *", async () => {
 });
 
 
-// if (process.env.ENV !== "prod") {
+if (process.env.ENV !== "prod") {
   bot.launch();
-// }
+}
 
 // Inicializa o servidor Express
 app.listen(port, () => {
