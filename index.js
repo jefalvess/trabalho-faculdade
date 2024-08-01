@@ -7,7 +7,45 @@ const redis = require("./models/redisClient");
 const { message } = require("telegraf/filters");
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
+const WEBHOOK_URL = `${process.env.URL}/bot${process.env.BOT_TOKEN}`;
+
+// Função para configurar o webhook
+async function setWebhook() {
+  try {
+    const response = await bot.telegram.setWebhook(WEBHOOK_URL);
+    console.log('Webhook configurado com sucesso:', response);
+  } catch (error) {
+    console.error('Erro ao configurar o webhook:', error);
+  }
+}
+
+// Função para remover o webhook
+async function removeWebhook() {
+  try {
+    const response = await bot.telegram.deleteWebhook();
+    console.log('Webhook removido:', response);
+  } catch (error) {
+    console.error('Erro ao remover o webhook:', error);
+  }
+}
+
+// Função para obter informações do webhook
+async function getWebhookInfo() {
+  try {
+    const info = await bot.telegram.getWebhookInfo();
+    console.log('Webhook Info:', info);
+  } catch (error) {
+    console.error('Erro ao obter informações do webhook:', error);
+  }
+}
+
+// Configuração inicial
 if (process.env.ENV === 'prod') {
+  (async function() {
+    await removeWebhook(); // Remove webhook existente
+    await setWebhook();    // Configura o novo webhook
+    await getWebhookInfo(); // Obtém informações do webhook
+  })();
   const webhookUrl = `${process.env.URL}/bot${process.env.BOT_TOKEN}`;
   bot.telegram.setWebhook(webhookUrl);
 }
