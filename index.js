@@ -70,7 +70,7 @@ async function readAndLogMessages(mensagens) {
       } else {
         clearInterval(intervalId);
       }
-    }, 1000 * 2);
+    }, 1000 * 5);
   } catch (error) {
     console.log("erro ao enviar dados");
   }
