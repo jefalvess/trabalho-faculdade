@@ -118,7 +118,7 @@ if (process.env.ENV !== "prod") {
   bot.launch({
     webhook: {
       domain: "https://trabalho-faculdade-1.onrender.com",
-      port: port,
+      port: 8080,
     },
   });
 }
