@@ -17,17 +17,15 @@ async function getStringFromCache(key) {
       return value;
     }
   } catch (err) {
-    console.log(err)
+    console.log(err);
     return false;
   }
 }
 
 async function cacheString(key, value) {
   try {
-
-      const ttl = 28800; // 8 horas em segundos
-      await redis.set(key, value, 'EX', ttl);
-    
+    const ttl = 28800; // 8 horas em segundos
+    await redis.set(key, value, "EX", ttl);
   } catch (err) {
     console.error("Erro ao inserir string no cache:", err);
   }
@@ -84,10 +82,7 @@ if (process.env.ENV === "prod") {
     // -4279611369 - prod e local memso id de sala'
     const currentTime = await getCurrentTime();
     const chatId2 = parseInt(-4279611369);
-    bot.telegram.sendMessage(
-      chatId2,
-      `RODEI O JOB ${currentTime}`
-    );
+    bot.telegram.sendMessage(chatId2, `RODEI O JOB ${currentTime}`);
   });
 }
 
