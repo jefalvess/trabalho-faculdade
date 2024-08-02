@@ -64,24 +64,24 @@ const extractDataUtcFromLine = (line) => {
 };
 
 const convertTimestampToBrazilianDateTime = (timestamp) => {
-  const date = new Date(parseInt(timestamp, 10));
-
-  const options = {
-    timeZone: "America/Sao_Paulo",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  };
-
-  const formattedDate = date.toLocaleString("pt-BR", options);
-
-  const [day, month, yearAndTime] = formattedDate.split("/");
-  const [year, time] = yearAndTime.split(", ");
-
-  return `${day}/${month}/${year}`;
+  const date = new Date(parseInt(timestamp));
+  if (isNaN(date.getTime())) {
+    console.error("Data inválida");
+    return "";
+  } else {
+    const options = {
+      timeZone: "America/Sao_Paulo",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+      hour12: false,
+    };
+    const formattedDate = date.toLocaleString("pt-BR", options);
+    return `${formattedDate}`;
+  }
 };
 
 const isNumber = (input) => {
@@ -122,29 +122,27 @@ const extractLinkText1 = (html) => {
   return match ? match[1].trim() : null;
 };
 
-async function isDateAfterTwoHours(dateString) {
-  try {
-    // Converter a string para um objeto Date
-    let [datePart, timePart] = dateString.split(" ");
-    let [day, month, year] = datePart.split("/");
-    let [hours, minutes] = timePart.split(":");
-    let date = new Date(year, month - 1, day, hours, minutes);
+async function timeStempHaha(hoursToAdd) {
+  // Cria um objeto Date com a hora atual em UTC
+  const now = new Date();
 
-      // Obter a data atual no fuso horário de São Paulo
-      let now = new Date();
-      let formatter = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo' });
-      now = new Date(formatter.format(now));
-
-      // Ajustar a data atual para duas horas no futuro
-      let nowPlusTwoHours = new Date(now.getTime() + 2 * 60 * 60 * 1000);
-
-    // Validar se a data é depois de duas horas da data atual
-    return date > nowPlusTwoHours;
-  } catch (error) {
-    console.log(error)
-    return true;
-  }
+  // Adiciona as horas especificadas
+  now.setHours(now.getHours() + hoursToAdd);
+  const options = {
+    timeZone: "America/Sao_Paulo",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+    hour12: false,
+  };
+  const formattedDate = now.toLocaleString("pt-BR", options);
+  // Retorna a data ajustada formatada
+  return formattedDate;
 }
+
 
 const readAndLogHtmlFile = async () => {
   try {
@@ -164,7 +162,6 @@ const readAndLogHtmlFile = async () => {
     let loopTemp = 0;
     for (const [index, line] of lines.entries()) {
       if (line.trim().startsWith(searchString1)) {
-
         const lineTemp = extractSpanValueFromLine1(line);
         temp["ganho"] = lineTemp;
       }
@@ -231,20 +228,20 @@ const readAndLogHtmlFile = async () => {
         if (loopTemp > 0) {
           let strWithoutPercentage = temp.ganho.replace(/%/g, "");
           let result = strWithoutPercentage.replace(/,/g, ".");
-          if (result > 10 || (await isDateAfterTwoHours(temp.data)) === false) {
+          if (result > 10 || temp.data < temp.data > await timeStempHaha(2)) {
             mensagens.push(temp);
           }
           temp = {};
         }
         loopTemp += 1;
       }
+    }
+    if (temp["jogo"]) {
+      let strWithoutPercentage = temp.ganho.replace(/%/g, "");
+      let result = strWithoutPercentage.replace(/,/g, ".");
+      if (result > 10 || temp.data > await timeStempHaha(3)) {
+        mensagens.push(temp);
       }
-      if (temp["jogo"]) {
-        let strWithoutPercentage = temp.ganho.replace(/%/g, "");
-        let result = strWithoutPercentage.replace(/,/g, ".");
-        if (result > 10 || (await isDateAfterTwoHours(temp.data)) === false) {
-          mensagens.push(temp);
-        }
     }
     return mensagens;
   } catch (err) {
