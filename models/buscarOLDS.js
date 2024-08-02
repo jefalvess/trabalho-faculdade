@@ -210,10 +210,8 @@ const readAndLogHtmlFile = async () => {
         loopTemp += 1;
       }
     }
-    if (loopTemp === 1) {
-      if(temp["jogo"]) { 
-        mensagens.push(temp);
-      }
+    if (temp["jogo"]) {
+      mensagens.push(temp);
     }
     return mensagens;
   } catch (err) {
