@@ -130,11 +130,13 @@ async function isDateAfterTwoHours(dateString) {
     let [hours, minutes] = timePart.split(":");
     let date = new Date(year, month - 1, day, hours, minutes);
 
-    // Obter a data atual
-    let now = new Date();
+      // Obter a data atual no fuso horário de São Paulo
+      let now = new Date();
+      let formatter = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo' });
+      now = new Date(formatter.format(now));
 
-    // Ajustar a data atual para duas horas no futuro
-    let nowPlusTwoHours = new Date(now.getTime() + 2 * 60 * 60 * 1000);
+      // Ajustar a data atual para duas horas no futuro
+      let nowPlusTwoHours = new Date(now.getTime() + 2 * 60 * 60 * 1000);
 
     // Validar se a data é depois de duas horas da data atual
     return date > nowPlusTwoHours;
@@ -162,6 +164,7 @@ const readAndLogHtmlFile = async () => {
     let loopTemp = 0;
     for (const [index, line] of lines.entries()) {
       if (line.trim().startsWith(searchString1)) {
+
         const lineTemp = extractSpanValueFromLine1(line);
         temp["ganho"] = lineTemp;
       }
@@ -235,9 +238,13 @@ const readAndLogHtmlFile = async () => {
         }
         loopTemp += 1;
       }
-    }
-    if (temp["jogo"]) {
-      mensagens.push(temp);
+      }
+      if (temp["jogo"]) {
+        let strWithoutPercentage = temp.ganho.replace(/%/g, "");
+        let result = strWithoutPercentage.replace(/,/g, ".");
+        if (result > 10 || (await isDateAfterTwoHours(temp.data)) === false) {
+          mensagens.push(temp);
+        }
     }
     return mensagens;
   } catch (err) {
@@ -247,3 +254,4 @@ const readAndLogHtmlFile = async () => {
 };
 
 module.exports = readAndLogHtmlFile;
+// readAndLogHtmlFile()
