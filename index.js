@@ -5,9 +5,15 @@ const readAndLogHtmlFile = require("./models/buscarOLDS");
 const fetchAndSaveHtml = require("./models/criarHTML");
 const redis = require("./models/redisClient");
 const { message } = require("telegraf/filters");
+const express = require("express");
 
-const bot = new Telegraf(process.env.BOT_TOKEN);
 const WEBHOOK_URL = `${process.env.URL}/bot${process.env.BOT_TOKEN}`;
+const chatId = parseInt(process.env.GRUPO_ID);
+const port = process.env.PORT || 3000;
+const bot = new Telegraf(process.env.BOT_TOKEN);
+const app = express();
+
+app.use(express.json());
 
 // Função para configurar o webhook
 async function setWebhook() {
@@ -29,30 +35,8 @@ async function getWebhookInfo() {
   }
 }
 
-// Configuração inicial
-// Configuração do webhook
-(async function() {
-  if (process.env.ENV === "prod") {
-    // Configura o webhook somente em produção
-    await setWebhook();
-    await getWebhookInfo();
-  } else {
-    // Inicializa o bot com polling em ambientes não-prod
-    bot.launch().catch(console.error);
-  }
-})();
-
-const chatId = parseInt(process.env.GRUPO_ID);
-
-const express = require("express");
-
-const app = express();
-const port = process.env.PORT || 3000;
-
-app.use(express.json());
-
 // Rota básica de teste
-app.get("/work", async (req, res) => {
+app.get("/work", (req, res) => {
   res.send("Servidor Express está funcionando!");
 });
 
@@ -63,20 +47,16 @@ app.get("/test", async (req, res) => {
   res.send("Servidor Express está funcionando!");
 });
 
-
+// Rota para receber atualizações do Telegram
 app.post(`/bot${process.env.BOT_TOKEN}`, (req, res) => {
-  bot.handleUpdate(req.body);
-  res.sendStatus(200);
+  bot.handleUpdate(req.body); // Processa a atualização recebida
+  res.sendStatus(200); // Envia resposta HTTP 200 OK
 });
 
 async function getStringFromCache(key) {
   try {
     const value = await redis.get(key);
-    if (value === null) {
-      return false;
-    } else {
-      return value;
-    }
+    return value === null ? false : value;
   } catch (err) {
     console.log(err);
     return false;
@@ -99,10 +79,7 @@ async function readAndLogMessages(mensagens) {
       if (index < mensagens.length) {
         let string = `\nGanho: ${mensagens[index]["ganho"]}\nJogo: ${mensagens[index]["jogo"]} | ${mensagens[index]["modalidade"]} | data : ${mensagens[index]["data"]}\nAposte: (${mensagens[index].bet1}) ${mensagens[index]["fazer1"]} -> ${mensagens[index]["old1"]}\nAposte: (${mensagens[index]["bet2"]}) ${mensagens[index]["fazer2"]} -> ${mensagens[index]["old2"]}\nhá ${mensagens[index]["descoberta"]}`;
         let key = `${mensagens[index]["bet1"]})-${mensagens[index]["fazer1"]} ${mensagens[index]["ganho"]}`;
-        if (
-          (await getStringFromCache(Buffer.from(key).toString("base64"))) ==
-          false
-        ) {
+        if (await getStringFromCache(Buffer.from(key).toString("base64")) == false) {
           await bot.telegram.sendMessage(chatId, string);
           cacheString(Buffer.from(key).toString("base64"), "string");
         }
@@ -110,11 +87,10 @@ async function readAndLogMessages(mensagens) {
       } else {
         clearInterval(intervalId);
       }
-    }, 1000 * 5);
+    }, 1000 * 2.5);
 
     const chatId2 = parseInt(-4279611369);
     bot.telegram.sendMessage(chatId2, `PROCESSADO COM SUCESSO`);
-
   } catch (error) {
     console.log("erro ao enviar dados");
   }
@@ -142,24 +118,34 @@ async function executarJOB() {
 }
 
 bot.on(message("text"), async (ctx) => {
-  if (
-    ctx.message.chat.id === chatId &&
-    ctx.message.text.toLowerCase() === "buscar"
-  ) {
-    ctx.reply("To trabalhando corretamente");
+  if (ctx.message.chat.id === chatId && ctx.message.text.toLowerCase() === "buscar") {
+    ctx.reply("Estou trabalhando corretamente");
   }
 });
 
-// roda a cada minuto esperando dados
+// Roda a cada minuto esperando dados
 cron.schedule("* * * * *", async () => {
   executarJOB();
 });
-
 
 // Inicializa o servidor Express
 app.listen(port, () => {
   console.log(`Servidor Express está rodando na porta ${port}`);
 });
 
+// Gerencia sinais de término
 process.once("SIGINT", () => bot.stop("SIGINT"));
 process.once("SIGTERM", () => bot.stop("SIGTERM"));
+
+// Configuração inicial
+(async function() {
+  console.log('Iniciando configuração do webhook...');
+  if (process.env.ENV === "prod") {
+    // Configura o webhook somente em produção
+    await setWebhook();
+    await getWebhookInfo();
+  } else {
+    // Inicializa o bot com polling em ambientes não-prod
+    bot.launch().catch(console.error);
+  }
+})();
