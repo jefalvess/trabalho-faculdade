@@ -89,8 +89,12 @@ async function readAndLogMessages(mensagens) {
       }
     }, 1000 * 5);
 
-    const chatId2 = parseInt(-4279611369);
-    bot.telegram.sendMessage(chatId2, `PROCESSADO COM SUCESSO`);
+    if (process.env.ENV === "prod") {
+      const chatId2 = parseInt(-4279611369);
+      bot.telegram.sendMessage(chatId2, `PROCESSADO COM SUCESSO`);
+    } else { 
+      console.log('PROCESSADO COM SUCESSO')
+    }
   } catch (error) {
     console.log("erro ao enviar dados");
   }
