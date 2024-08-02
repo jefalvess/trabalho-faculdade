@@ -159,7 +159,7 @@ const readAndLogHtmlFile = async () => {
       if (line.trim().includes(searchString4)) {
         const lineTemp = extractLinkText(line.trim());
         if (isNumber(lineTemp) === true) {
-          temp["old1"] = lineTemp;
+          temp["old1"] = parseFloat(lineTemp.trim());
         } else {
           temp["jogo"] = lineTemp;
         }
@@ -168,7 +168,7 @@ const readAndLogHtmlFile = async () => {
       if (line.trim().includes(searchString4part2)) {
         const lineTemp = extractLinkText(line.trim());
         if (isNumber(lineTemp) === true) {
-          temp["old2"] = lineTemp;
+          temp["old2"] = parseFloat(lineTemp.trim());
         } else {
           temp["jogo"] = lineTemp;
         }
@@ -221,3 +221,4 @@ const readAndLogHtmlFile = async () => {
 };
 
 module.exports = readAndLogHtmlFile;
+// readAndLogHtmlFile()
