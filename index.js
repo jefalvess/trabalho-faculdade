@@ -80,14 +80,14 @@ async function readAndLogMessages(mensagens) {
         let string = `\nGanho: ${mensagens[index]["ganho"]}\nJogo: ${mensagens[index]["jogo"]} | ${mensagens[index]["modalidade"]} | data : ${mensagens[index]["data"]}\nAposte: (${mensagens[index].bet1}) ${mensagens[index]["fazer1"]} -> ${mensagens[index]["old1"]}\nAposte: (${mensagens[index]["bet2"]}) ${mensagens[index]["fazer2"]} -> ${mensagens[index]["old2"]}\nhá ${mensagens[index]["descoberta"]}`;
         let key = `${mensagens[index]["bet1"]})-${mensagens[index]["fazer1"]} ${mensagens[index]["ganho"]}`;
         if (await getStringFromCache(Buffer.from(key).toString("base64")) == false) {
-          await bot.telegram.sendMessage(chatId, string);
+          bot.telegram.sendMessage(chatId, string);
           cacheString(Buffer.from(key).toString("base64"), "string");
         }
         index++;
       } else {
         clearInterval(intervalId);
       }
-    }, 1000 * 2.5);
+    }, 1000 * 5);
 
     const chatId2 = parseInt(-4279611369);
     bot.telegram.sendMessage(chatId2, `PROCESSADO COM SUCESSO`);
