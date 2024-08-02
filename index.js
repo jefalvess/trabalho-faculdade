@@ -80,9 +80,10 @@ async function readAndLogMessages(mensagens) {
       if (index < mensagens.length) {
         let oldGanha = await calculadora(
           mensagens[index]["old1"],
-          mensagens[index]["old2"]
+          mensagens[index]["old2"],
+          mensagens[index]["ganho"]
         );
-        let string = `\nGanho: ${mensagens[index]["ganho"]}\nJogo: ${mensagens[index]["jogo"]} | ${mensagens[index]["modalidade"]} | data : ${mensagens[index]["data"]}\nAposte: (${mensagens[index].bet1}) ${mensagens[index]["fazer1"]} -> ${mensagens[index]["old1"]}\nAposte: (${mensagens[index]["bet2"]}) ${mensagens[index]["fazer2"]} -> ${mensagens[index]["old2"]}\nhá ${mensagens[index]["descoberta"]}\n${oldGanha}`;
+        let string = `Data do jogo: ${mensagens[index]["data"]}\nJogo: ${mensagens[index]["jogo"]} | ${mensagens[index]["modalidade"]}\n\nAposte: (${mensagens[index].bet1}) ${mensagens[index]["fazer1"]} -> ${mensagens[index]["old1"]}\n\nAposte: (${mensagens[index]["bet2"]}) ${mensagens[index]["fazer2"]} -> ${mensagens[index]["old2"]}\n\n\n${oldGanha}\n\n `;
         let key = `${mensagens[index]["bet1"]})-${mensagens[index]["fazer1"]} ${mensagens[index]["ganho"]}`;
         if (
           (await getStringFromCache(Buffer.from(key).toString("base64"))) ==
@@ -95,7 +96,7 @@ async function readAndLogMessages(mensagens) {
       } else {
         clearInterval(intervalId);
       }
-    }, 1000 * 5);
+    }, 1000 * 3);
 
     if (process.env.ENV === "prod") {
       const chatId2 = parseInt(-4279611369);
@@ -159,15 +160,18 @@ app.listen(port, () => {
 process.once("SIGINT", () => bot.stop("SIGINT"));
 process.once("SIGTERM", () => bot.stop("SIGTERM"));
 
-// Configuração inicial
-(async function () {
-  console.log("Iniciando configuração do webhook...");
-  if (process.env.ENV === "prod") {
-    // Configura o webhook somente em produção
-    await setWebhook();
-    await getWebhookInfo();
-  } else {
-    // Inicializa o bot com polling em ambientes não-prod
-    bot.launch().catch(console.error);
-  }
-})();
+
+if (process.env.ENV === 'prod')  { 
+  // Configuração inicial
+  (async function () {
+    console.log("Iniciando configuração do webhook...");
+    if (process.env.ENV === "prod") {
+      // Configura o webhook somente em produção
+      await setWebhook();
+      await getWebhookInfo();
+    } else {
+      // Inicializa o bot com polling em ambientes não-prod
+      bot.launch().catch(console.error);
+    }
+  })();
+}

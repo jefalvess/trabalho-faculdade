@@ -43,10 +43,10 @@ function calcularTotalAposta(old1, old2) {
   return totalAposta;
 }
 
-const calcularPrincipal = async (old1, old2) => {
+const calcularPrincipal = async (old1, old2, perc) => {
   const aposta = calcularTotalAposta(old1, old2);
   const resultado = calcularApostasParaGanhoIgual(aposta, old1, old2);
-  const string = `Aposta 1: ${resultado.aposta1.toFixed(2)}\nAposta 2: ${resultado.aposta2.toFixed(2)}\nLucro: ${resultado.lucroGarantido.toFixed(2)}`
+  const string = `Aposta 1: ${resultado.aposta1.toFixed(2)} - Aposta 2: ${resultado.aposta2.toFixed(2)}\nLucro: ${resultado.lucroGarantido.toFixed(2)} - Perc: ${perc}`
   return string
 };
 

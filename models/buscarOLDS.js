@@ -122,6 +122,24 @@ const extractLinkText1 = (html) => {
   return match ? match[1].trim() : null;
 };
 
+async function isDateAfterTwoHours(dateString) {
+  // Converter a string para um objeto Date
+  let [datePart, timePart] = dateString.split(' ');
+  let [day, month, year] = datePart.split('/');
+  let [hours, minutes] = timePart.split(':');
+  let date = new Date(year, month - 1, day, hours, minutes);
+
+  // Obter a data atual
+  let now = new Date();
+
+  // Ajustar a data atual para duas horas no futuro
+  let nowPlusTwoHours = new Date(now.getTime() + 2 * 60 * 60 * 1000);
+
+  // Validar se a data é depois de duas horas da data atual
+  return date > nowPlusTwoHours;
+}
+
+
 const readAndLogHtmlFile = async () => {
   try {
     const lines = await readHtmlFileAsArray();
@@ -204,7 +222,11 @@ const readAndLogHtmlFile = async () => {
 
       if (line.trim().includes('data-formula="bookformula1"')) {
         if (loopTemp > 0) {
-          mensagens.push(temp);
+          let strWithoutPercentage = temp.ganho.replace(/%/g, '');
+          let result = strWithoutPercentage.replace(/,/g, '.');
+          if (result > 10 || await isDateAfterTwoHours(temp.data) === false ) { 
+            mensagens.push(temp);
+          }
           temp = {};
         }
         loopTemp += 1;
@@ -221,4 +243,3 @@ const readAndLogHtmlFile = async () => {
 };
 
 module.exports = readAndLogHtmlFile;
-// readAndLogHtmlFile()
