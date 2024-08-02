@@ -3,6 +3,7 @@ const { Telegraf } = require("telegraf");
 const cron = require("node-cron");
 const readAndLogHtmlFile = require("./models/buscarOLDS");
 const fetchAndSaveHtml = require("./models/criarHTML");
+const calculadora = require("./models/calculadora");
 const redis = require("./models/redisClient");
 const { message } = require("telegraf/filters");
 const express = require("express");
@@ -19,9 +20,9 @@ app.use(express.json());
 async function setWebhook() {
   try {
     const response = await bot.telegram.setWebhook(WEBHOOK_URL);
-    console.log('Webhook configurado com sucesso:', response);
+    console.log("Webhook configurado com sucesso:", response);
   } catch (error) {
-    console.error('Erro ao configurar o webhook:', error);
+    console.error("Erro ao configurar o webhook:", error);
   }
 }
 
@@ -29,9 +30,9 @@ async function setWebhook() {
 async function getWebhookInfo() {
   try {
     const info = await bot.telegram.getWebhookInfo();
-    console.log('Webhook Info:', info);
+    console.log("Webhook Info:", info);
   } catch (error) {
-    console.error('Erro ao obter informações do webhook:', error);
+    console.error("Erro ao obter informações do webhook:", error);
   }
 }
 
@@ -77,9 +78,16 @@ async function readAndLogMessages(mensagens) {
     let index = 0;
     const intervalId = setInterval(async () => {
       if (index < mensagens.length) {
-        let string = `\nGanho: ${mensagens[index]["ganho"]}\nJogo: ${mensagens[index]["jogo"]} | ${mensagens[index]["modalidade"]} | data : ${mensagens[index]["data"]}\nAposte: (${mensagens[index].bet1}) ${mensagens[index]["fazer1"]} -> ${mensagens[index]["old1"]}\nAposte: (${mensagens[index]["bet2"]}) ${mensagens[index]["fazer2"]} -> ${mensagens[index]["old2"]}\nhá ${mensagens[index]["descoberta"]}`;
+        let oldGanha = await calculadora(
+          mensagens[index]["old1"],
+          mensagens[index]["old2"]
+        );
+        let string = `\nGanho: ${mensagens[index]["ganho"]}\nJogo: ${mensagens[index]["jogo"]} | ${mensagens[index]["modalidade"]} | data : ${mensagens[index]["data"]}\nAposte: (${mensagens[index].bet1}) ${mensagens[index]["fazer1"]} -> ${mensagens[index]["old1"]}\nAposte: (${mensagens[index]["bet2"]}) ${mensagens[index]["fazer2"]} -> ${mensagens[index]["old2"]}\nhá ${mensagens[index]["descoberta"]}\n${oldGanha}`;
         let key = `${mensagens[index]["bet1"]})-${mensagens[index]["fazer1"]} ${mensagens[index]["ganho"]}`;
-        if (await getStringFromCache(Buffer.from(key).toString("base64")) == false) {
+        if (
+          (await getStringFromCache(Buffer.from(key).toString("base64"))) ==
+          false
+        ) {
           bot.telegram.sendMessage(chatId, string);
           cacheString(Buffer.from(key).toString("base64"), "string");
         }
@@ -92,8 +100,8 @@ async function readAndLogMessages(mensagens) {
     if (process.env.ENV === "prod") {
       const chatId2 = parseInt(-4279611369);
       bot.telegram.sendMessage(chatId2, `PROCESSADO COM SUCESSO`);
-    } else { 
-      console.log('PROCESSADO COM SUCESSO')
+    } else {
+      console.log("PROCESSADO COM SUCESSO");
     }
   } catch (error) {
     console.log("erro ao enviar dados");
@@ -122,15 +130,25 @@ async function executarJOB() {
 }
 
 bot.on(message("text"), async (ctx) => {
-  if (ctx.message.chat.id === chatId && ctx.message.text.toLowerCase() === "buscar") {
+  if (
+    ctx.message.chat.id === chatId &&
+    ctx.message.text.toLowerCase() === "buscar"
+  ) {
     ctx.reply("Estou trabalhando corretamente");
   }
 });
 
 // Roda a cada minuto esperando dados
-cron.schedule("* * * * *", async () => {
-  executarJOB();
-});
+cron.schedule(
+  "* 8-20 * * *",
+  () => {
+    executarJOB();
+  },
+  {
+    scheduled: true,
+    timezone: "America/Sao_Paulo",
+  }
+);
 
 // Inicializa o servidor Express
 app.listen(port, () => {
@@ -142,8 +160,8 @@ process.once("SIGINT", () => bot.stop("SIGINT"));
 process.once("SIGTERM", () => bot.stop("SIGTERM"));
 
 // Configuração inicial
-(async function() {
-  console.log('Iniciando configuração do webhook...');
+(async function () {
+  console.log("Iniciando configuração do webhook...");
   if (process.env.ENV === "prod") {
     // Configura o webhook somente em produção
     await setWebhook();
