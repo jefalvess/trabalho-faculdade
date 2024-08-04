@@ -228,7 +228,7 @@ const readAndLogHtmlFile = async () => {
         if (loopTemp > 0) {
           let strWithoutPercentage = temp.ganho.replace(/%/g, "");
           let result = strWithoutPercentage.replace(/,/g, ".");
-          if (result > 15 || temp.data < await timeStempHaha(3)) {
+          if (result > 25 || temp.data < await timeStempHaha(3)) {
             mensagens.push(temp);
           }
           temp = {};
