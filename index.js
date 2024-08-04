@@ -84,7 +84,7 @@ async function readAndLogMessages(mensagens) {
           mensagens[index]["ganho"]
         );
         let string = `Data do jogo: ${mensagens[index]["data"]}\nJogo: ${mensagens[index]["jogo"]} | ${mensagens[index]["modalidade"]}\n\nAposte: (${mensagens[index].bet1}) ${mensagens[index]["fazer1"]} -> ${mensagens[index]["old1"]}\n\nAposte: (${mensagens[index]["bet2"]}) ${mensagens[index]["fazer2"]} -> ${mensagens[index]["old2"]}\n\n\n${oldGanha}\n\n `;
-        let key = `${mensagens[index]["bet1"]})-${mensagens[index]["fazer1"]} ${mensagens[index]["ganho"]}`;
+        let key = `${mensagens[index]["bet1"]})-${mensagens[index]["fazer1"]}`;
         if (
           (await getStringFromCache(Buffer.from(key).toString("base64"))) ==
           false
