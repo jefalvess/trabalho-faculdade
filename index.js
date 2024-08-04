@@ -141,7 +141,7 @@ bot.on(message("text"), async (ctx) => {
 
 // Roda a cada minuto esperando dados
 cron.schedule(
-  "* 8-20 * * *",
+  "* 8-23 * * *",
   () => {
     executarJOB();
   },
