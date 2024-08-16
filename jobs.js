@@ -15,7 +15,7 @@ const job1 = (bot) => {
 
 const job2 = (bot) => {
   cron.schedule(
-    "30 * * * * *",
+    "15 * * * * *",
     () => {
       grupoVendaExecutar(bot);
     },
@@ -28,7 +28,7 @@ const job2 = (bot) => {
 
 const job3 = (bot) => {
   cron.schedule(
-    "* * * * *",
+    "30 15-17 * * *",
     () => {
       grupoFreeExecutar(bot);
     },

@@ -104,7 +104,7 @@ async function readAndLogMessages(mensagens, bot, chatId) {
 async function grupoPrivadoExecutar(bot) {
   try {
     const url = process.env.URL_GRUPO_PRIVADO;
-    const fileName = "index2.html"
+    const fileName = "index1.html"
     await fetchAndSaveHtml(url, fileName);
     const mensagens = await readAndLogHtmlFile(fileName);
     const chatId = parseInt(process.env.GRUPO_ID);
