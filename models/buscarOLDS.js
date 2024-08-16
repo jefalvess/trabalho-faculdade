@@ -2,9 +2,9 @@ const path = require("path");
 const fs = require("fs").promises;
 const { JSDOM } = require("jsdom");
 
-const readHtmlFileAsArray = async () => {
+const readHtmlFileAsArray = async (fileName) => {
   try {
-    const filePath = path.join(__dirname, "../files/index.html");
+    const filePath = path.join(__dirname, `../files/${fileName}`);
 
     const data = await fs.readFile(filePath, "utf8");
 
@@ -144,9 +144,9 @@ async function timeStempHaha(hoursToAdd) {
 }
 
 
-const readAndLogHtmlFile = async () => {
+const readAndLogHtmlFile = async (fileName) => {
   try {
-    const lines = await readHtmlFileAsArray();
+    const lines = await readHtmlFileAsArray(fileName);
     const searchString1 = '<span class="profit ps-2 cursor-help';
     const searchString2 = '<span class="age ps-2 cursor-help';
     const searchString3 = "data-utc=";

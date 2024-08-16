@@ -95,8 +95,9 @@ async function readAndLogMessages(mensagens, bot, chatId) {
 async function grupoPrivadoExecutar(bot) {
   try {
     const url = process.env.URL_GRUPO_PRIVADO;
-    await fetchAndSaveHtml(url);
-    const mensagens = await readAndLogHtmlFile();
+    const fileName = "index2.html"
+    await fetchAndSaveHtml(url, fileName);
+    const mensagens = await readAndLogHtmlFile(fileName);
     const chatId = parseInt(process.env.GRUPO_ID);
     await readAndLogMessages(mensagens, bot, chatId);
   } catch (error) {
@@ -107,8 +108,9 @@ async function grupoPrivadoExecutar(bot) {
 async function grupoVendaExecutar(bot) {
   try {
     const url = process.env.URL_GRUPO_VENDA;
-    await fetchAndSaveHtml(url);
-    const mensagens = await readAndLogHtmlFile();
+    const fileName = "index2.html"
+    await fetchAndSaveHtml(url, fileName);
+    const mensagens = await readAndLogHtmlFile(fileName);
     const chatId = parseInt(process.env.GRUPO_ID_VENDA);
     await readAndLogMessages(mensagens, bot, chatId);
   } catch (error) {
@@ -119,7 +121,8 @@ async function grupoVendaExecutar(bot) {
 
 async function grupoFreeExecutar(bot) {
   try {
-    const mensagens = await readAndLogHtmlFile();
+    const fileName = "index2.html"
+    const mensagens = await readAndLogHtmlFile(fileName);
     const chatId = parseInt(process.env.GRUPO_ID_FREE);
     await readAndLogMessages(mensagens, bot, chatId);
   } catch (error) {
