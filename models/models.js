@@ -143,7 +143,7 @@ async function grupoPrivadoExecutar(bot) {
     const mensagens = await readAndLogHtmlFile(fileName, 6);
     const chatId = parseInt(process.env.GRUPO_ID);
     const keys = await readAndLogMessages(mensagens, bot, chatId);
-    await excluirMensagens(bot, keys, chatId)
+    // await excluirMensagens(bot, keys, chatId)
   } catch (error) {
     console.log(error);
   }
@@ -157,7 +157,7 @@ async function grupoVendaExecutar(bot) {
     const mensagens = await readAndLogHtmlFile(fileName, 8);
     const chatId = parseInt(process.env.GRUPO_ID_VENDA);
     const keys = await readAndLogMessages(mensagens, bot, chatId);
-    await excluirMensagens(bot, keys, chatId)
+    // await excluirMensagens(bot, keys, chatId)
   } catch (error) {
     console.log(error);
   }
