@@ -5,7 +5,7 @@ const readAndLogHtmlFile = require("./buscarOLDS");
 const fetchAndSaveHtml = require("./criarHTML");
 const WEBHOOK_URL = `${process.env.URL}/bot${process.env.BOT_TOKEN}`;
 
-async function excluirMensagens(bot, listaAtual) {
+async function excluirMensagens(bot, listaAtual, chatIdOficial) {
   try {
     let cursor = '0';
     let keys = [];
@@ -21,8 +21,10 @@ async function excluirMensagens(bot, listaAtual) {
           let message_id = parseInt(data[0])
           let chatId = parseInt(data[1]);
           chatId = -chatId;
-          await bot.telegram.deleteMessage(chatId, message_id);
-          await redis.del(key);
+          if (chatIdOficial === chatId) { 
+            await bot.telegram.deleteMessage(chatId, message_id);
+            await redis.del(key);
+          }
         } catch (err) {
           console.error(`Erro ao obter o valor para a chave ${key}:`, err);
         }
@@ -141,7 +143,7 @@ async function grupoPrivadoExecutar(bot) {
     const mensagens = await readAndLogHtmlFile(fileName);
     const chatId = parseInt(process.env.GRUPO_ID);
     const keys = await readAndLogMessages(mensagens, bot, chatId);
-    await excluirMensagens(bot, keys)
+    await excluirMensagens(bot, keys, chatId)
   } catch (error) {
     console.log(error);
   }
@@ -155,7 +157,7 @@ async function grupoVendaExecutar(bot) {
     const mensagens = await readAndLogHtmlFile(fileName);
     const chatId = parseInt(process.env.GRUPO_ID_VENDA);
     const keys = await readAndLogMessages(mensagens, bot, chatId);
-    await excluirMensagens(bot, keys)
+    await excluirMensagens(bot, keys, chatId)
   } catch (error) {
     console.log(error);
   }
