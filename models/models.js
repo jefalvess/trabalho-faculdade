@@ -14,7 +14,7 @@ async function excluirMensagens(bot, listaAtual, chatIdOficial) {
       keys = reply['keys']
     } while (cursor !== '0');
     for (const key of keys) {
-      if (listaAtual.indexOf(key) === -1) { 
+      if (listaAtual.indexOf(key.split(":")[1]) === -1) { 
         try {
           const value = await redis.get(key);
           const data = value.split("--")
