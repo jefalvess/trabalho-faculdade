@@ -1,13 +1,10 @@
 const cron = require("node-cron");
-
-const { executarJOB } = require("./models/models");
-
-// Função para o primeiro job
+const { grupoPrivadoExecutar, grupoVendaExecutar } = require("./models/models");
 const job1 = (bot) => {
   cron.schedule(
     "* 8-23 * * *",
     () => {
-      executarJOB(bot);
+      grupoPrivadoExecutar(bot);
     },
     {
       scheduled: true,
@@ -16,14 +13,19 @@ const job1 = (bot) => {
   );
 };
 
-// Função para o segundo job
 const job2 = (bot) => {
-  cron.schedule("* * * * * *", async () => {
-    console.log("Job 2 executado diariamente à meia-noite");
-  });
+  cron.schedule(
+    "30 * * * * *",
+    () => {
+      grupoVendaExecutar(bot);
+    },
+    {
+      scheduled: true,
+      timezone: "America/Sao_Paulo",
+    }
+  );
 };
 
-// Função para chamar todos os jobs
 const callJobs = (bot) => {
   job1(bot);
   job2(bot);

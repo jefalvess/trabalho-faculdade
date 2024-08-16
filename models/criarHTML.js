@@ -24,10 +24,8 @@ async function saveHtml(response) {
   }
 }
 
-async function fetchAndSaveHtml() {
+async function fetchAndSaveHtml(url) {
   try {
-    // const url = "https://pt.surebet.com/surebets";
-    const url = process.env.URL_GRUPO_PRIVADO
     const headers = {
       accept:
         "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",

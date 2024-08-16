@@ -4,7 +4,6 @@ const redis = require("./redisClient");
 const readAndLogHtmlFile = require("./buscarOLDS");
 const fetchAndSaveHtml = require("./criarHTML");
 const WEBHOOK_URL = `${process.env.URL}/bot${process.env.BOT_TOKEN}`;
-const chatId = parseInt(process.env.GRUPO_ID);
 
 async function getStringFromCache(key) {
   try {
@@ -56,7 +55,7 @@ async function getWebhookInfo(bot) {
   }
 }
 
-async function readAndLogMessages(mensagens, bot) {
+async function readAndLogMessages(mensagens, bot, chatId) {
   try {
     let index = 0;
     const intervalId = setInterval(async () => {
@@ -93,11 +92,25 @@ async function readAndLogMessages(mensagens, bot) {
   }
 }
 
-async function executarJOB(bot) {
+async function grupoPrivadoExecutar(bot) {
   try {
-    await fetchAndSaveHtml();
+    const url = process.env.URL_GRUPO_PRIVADO;
+    await fetchAndSaveHtml(url);
     const mensagens = await readAndLogHtmlFile();
-    await readAndLogMessages(mensagens, bot);
+    const chatId = parseInt(process.env.GRUPO_ID);
+    await readAndLogMessages(mensagens, bot, chatId);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function grupoVendaExecutar(bot) {
+  try {
+    const url = process.env.URL_GRUPO_VENDA;
+    await fetchAndSaveHtml(url);
+    const mensagens = await readAndLogHtmlFile();
+    const chatId = parseInt(process.env.GRUPO_ID_VENDA);
+    await readAndLogMessages(mensagens, bot, chatId);
   } catch (error) {
     console.log(error);
   }
@@ -110,5 +123,6 @@ module.exports = {
   cacheString,
   getCurrentTime,
   readAndLogMessages,
-  executarJOB,
+  grupoPrivadoExecutar,
+  grupoVendaExecutar,
 };

@@ -33,12 +33,20 @@ app.post(`/bot${process.env.BOT_TOKEN}`, (req, res) => {
 });
 
 bot.on(message("text"), async (ctx) => {
-  console.log(ctx.message.text.toLowerCase());
   if (
     ctx.message.chat.id === chatId &&
     ctx.message.text.toLowerCase() === "buscar"
   ) {
     ctx.reply("Estou trabalhando corretamente");
+  }
+});
+
+bot.launch((err) => {
+  if (err) {
+    console.error("Erro ao iniciar o bot:", err);
+  } else {
+    console.log("Bot iniciado com sucesso");
+    callJobs(bot);
   }
 });
 
@@ -49,19 +57,6 @@ if (process.env.ENV === "prod") {
     await getWebhookInfo();
   })();
 }
-
-function startBot() {
-  bot.launch((err) => {
-    if (err) {
-      console.error("Erro ao iniciar o bot:", err);
-    } else {
-      console.log("Bot iniciado com sucesso");
-      callJobs(bot);
-    }
-  });
-}
-
-startBot();
 
 app.listen(port, () => {
   console.log(`Servidor Express está rodando na porta ${port}`);
