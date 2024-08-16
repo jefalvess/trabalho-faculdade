@@ -5,20 +5,29 @@ const readAndLogHtmlFile = require("./buscarOLDS");
 const fetchAndSaveHtml = require("./criarHTML");
 const WEBHOOK_URL = `${process.env.URL}/bot${process.env.BOT_TOKEN}`;
 
-async function getStringFromCache(key) {
+async function getStringFromCache(key, chatId) {
   try {
-    const value = await redis.get(key);
+    const chatIdString = String(chatId); // Converter chatId para string
+    const hashKey = `cache:${chatIdString}`; // Prefixo de hash com chatId
+    const value = await redis.hget(hashKey, key);
     return value === null ? false : value;
   } catch (err) {
-    console.log(err);
+    console.error("Erro ao buscar string do cache:", err);
     return false;
   }
 }
 
-async function cacheString(key, value) {
+async function cacheString(key, value, chatId) {
   try {
+    const chatIdString = String(chatId); // Converter chatId para string
+    const hashKey = `cache:${chatIdString}`; // Prefixo de hash com chatId
     const ttl = 28800; // 8 horas em segundos
-    await redis.set(key, value, "EX", ttl);
+
+    // Armazenar o valor no hash
+    await redis.hset(hashKey, key, value);
+
+    // Definir o TTL para o hash
+    await redis.expire(hashKey, ttl);
   } catch (err) {
     console.error("Erro ao inserir string no cache:", err);
   }
@@ -69,17 +78,17 @@ async function readAndLogMessages(mensagens, bot, chatId) {
 
         let key = `${mensagens[index]["bet1"]})-${mensagens[index]["fazer1"]} ${mensagens[index]["ganho"]}`;
         if (
-          (await getStringFromCache(Buffer.from(key).toString("base64"))) ==
+          (await getStringFromCache(Buffer.from(key).toString("base64")), chatId) ==
           false
         ) {
           bot.telegram.sendMessage(chatId, string);
-          cacheString(Buffer.from(key).toString("base64"), "string");
+          cacheString(Buffer.from(key).toString("base64"), "string", chatId);
         }
         index++;
       } else {
         clearInterval(intervalId);
       }
-    }, 1000 * 3);
+    }, 1000 * 2);
 
     if (process.env.ENV === "prod") {
       const chatId2 = parseInt(-4279611369);
