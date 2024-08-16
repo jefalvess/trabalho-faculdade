@@ -7,7 +7,6 @@ const {
 } = require("./models/models");
 const { message } = require("telegraf/filters");
 const express = require("express");
-const chatId = parseInt(process.env.GRUPO_ID);
 const chatId2 = parseInt(-4279611369);
 const port = process.env.PORT || 3000;
 const bot = new Telegraf(process.env.BOT_TOKEN);
@@ -34,7 +33,6 @@ app.post(`/bot${process.env.BOT_TOKEN}`, (req, res) => {
 
 bot.on(message("text"), async (ctx) => {
   if (
-    ctx.message.chat.id === chatId &&
     ctx.message.text.toLowerCase() === "buscar"
   ) {
     ctx.reply("Estou trabalhando corretamente");
