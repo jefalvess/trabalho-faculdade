@@ -1,5 +1,5 @@
 const cron = require("node-cron");
-const { grupoPrivadoExecutar, grupoVendaExecutar } = require("./models/models");
+const { grupoPrivadoExecutar, grupoVendaExecutar, grupoFreeExecutar } = require("./models/models");
 const job1 = (bot) => {
   cron.schedule(
     "* 8-23 * * *",
@@ -26,9 +26,23 @@ const job2 = (bot) => {
   );
 };
 
+const job3 = (bot) => {
+  cron.schedule(
+    "5 13-14 * * *",
+    () => {
+      grupoFreeExecutar(bot);
+    },
+    {
+      scheduled: true,
+      timezone: "America/Sao_Paulo",
+    }
+  );
+};
+
 const callJobs = (bot) => {
   job1(bot);
   job2(bot);
+  job3(bot);
 };
 
 module.exports = callJobs;

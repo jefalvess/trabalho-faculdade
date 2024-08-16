@@ -116,6 +116,17 @@ async function grupoVendaExecutar(bot) {
   }
 }
 
+
+async function grupoFreeExecutar(bot) {
+  try {
+    const mensagens = await readAndLogHtmlFile();
+    const chatId = parseInt(process.env.GRUPO_ID_FREE);
+    await readAndLogMessages(mensagens, bot, chatId);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 module.exports = {
   setWebhook,
   getWebhookInfo,
@@ -125,4 +136,5 @@ module.exports = {
   readAndLogMessages,
   grupoPrivadoExecutar,
   grupoVendaExecutar,
+  grupoFreeExecutar
 };
