@@ -144,7 +144,7 @@ async function timeStempHaha(hoursToAdd) {
 }
 
 
-const readAndLogHtmlFile = async (fileName) => {
+const readAndLogHtmlFile = async (fileName, exceptionOld) => {
   try {
     const lines = await readHtmlFileAsArray(fileName);
     const searchString1 = '<span class="profit ps-2 cursor-help';
@@ -228,7 +228,7 @@ const readAndLogHtmlFile = async (fileName) => {
         if (loopTemp > 0) {
           let strWithoutPercentage = temp.ganho.replace(/%/g, "");
           let result = strWithoutPercentage.replace(/,/g, ".");
-          if (result > 6 || temp.data < await timeStempHaha(12)) {
+          if (result > exceptionOld || temp.data < await timeStempHaha(12)) {
             mensagens.push(temp);
           }
           temp = {};
@@ -239,7 +239,7 @@ const readAndLogHtmlFile = async (fileName) => {
     if (temp["jogo"]) {
       let strWithoutPercentage = temp.ganho.replace(/%/g, "");
       let result = strWithoutPercentage.replace(/,/g, ".");
-      if (result > 6 || temp.data < await timeStempHaha(12)) {
+      if (result > exceptionOld || temp.data < await timeStempHaha(12)) {
         mensagens.push(temp);
       }
     }
