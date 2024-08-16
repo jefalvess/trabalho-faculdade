@@ -9,7 +9,7 @@ async function getStringFromCache(key, chatId) {
   try {
     const chatIdString = String(chatId); // Converter chatId para string
     const hashKey = `cache:${chatIdString}`; // Prefixo de hash com chatId
-    const value = await redis.hget(hashKey, key);
+    const value = await redis.hGet(hashKey, key);
     return value === null ? false : value;
   } catch (err) {
     console.error("Erro ao buscar string do cache:", err);
@@ -24,7 +24,7 @@ async function cacheString(key, value, chatId) {
     const ttl = 28800; // 8 horas em segundos
 
     // Armazenar o valor no hash
-    await redis.hset(hashKey, key, value);
+    await redis.hSet(hashKey, key, value);
 
     // Definir o TTL para o hash
     await redis.expire(hashKey, ttl);
