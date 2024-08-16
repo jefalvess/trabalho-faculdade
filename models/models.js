@@ -8,8 +8,8 @@ const WEBHOOK_URL = `${process.env.URL}/bot${process.env.BOT_TOKEN}`;
 async function getStringFromCache(key, chatId) {
   try {
     const chatIdString = String(chatId); // Converter chatId para string
-    const hashKey = `cache:${chatIdString}`; // Prefixo de hash com chatId
-    const value = await redis.hGet(hashKey, key);
+    const fullKey = `cache-${chatIdString}:${key}`; // Prefixo de chave com chatId e key
+    const value = await redis.get(fullKey); // Obter o valor diretamente
     return value === null ? false : value;
   } catch (err) {
     console.error("Erro ao buscar string do cache:", err);
@@ -20,14 +20,14 @@ async function getStringFromCache(key, chatId) {
 async function cacheString(key, value, chatId) {
   try {
     const chatIdString = String(chatId); // Converter chatId para string
-    const hashKey = `cache:${chatIdString}`; // Prefixo de hash com chatId
+    const fullKey = `cache-${chatIdString}:${key}`; // Prefixo de chave com chatId e key
     const ttl = 28800; // 8 horas em segundos
 
-    // Armazenar o valor no hash
-    await redis.hSet(hashKey, key, value);
+    // Armazenar o valor com a chave completa
+    await redis.set(fullKey, value);
 
-    // Definir o TTL para o hash
-    await redis.expire(hashKey, ttl);
+    // Definir o TTL para a chave
+    await redis.expire(fullKey, ttl);
   } catch (err) {
     console.error("Erro ao inserir string no cache:", err);
   }
