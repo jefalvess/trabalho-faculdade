@@ -22,12 +22,7 @@ async function cacheString(key, value, chatId) {
     const chatIdString = String(chatId); // Converter chatId para string
     const fullKey = `cache-${chatIdString}:${key}`; // Prefixo de chave com chatId e key
     const ttl = 28800; // 8 horas em segundos
-
-    // Armazenar o valor com a chave completa
-    await redis.set(fullKey, value);
-
-    // Definir o TTL para a chave
-    await redis.expire(fullKey, ttl);
+    await redis.set(fullKey, value, "EX", ttl);
   } catch (err) {
     console.error("Erro ao inserir string no cache:", err);
   }
