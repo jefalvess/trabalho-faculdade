@@ -28,7 +28,7 @@ const job2 = (bot) => {
 
 const job3 = (bot) => {
   cron.schedule(
-    "* 13-14 * * *",
+    "* * * * *",
     () => {
       grupoFreeExecutar(bot);
     },
