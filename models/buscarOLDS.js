@@ -1,4 +1,5 @@
 const path = require("path");
+const buscarUrl = require("./buscarUrl");
 const fs = require("fs").promises;
 const { JSDOM } = require("jsdom");
 
@@ -143,6 +144,15 @@ async function timeStempHaha(hoursToAdd) {
   return formattedDate;
 }
 
+function extractHref(input) {
+  // Define a expressão regular para encontrar o href
+  const regex = /href="([^"]*)"/;
+  // Executa a expressão regular na string de entrada
+  const match = input.match(regex);
+  // Verifica se houve correspondência e retorna o primeiro grupo capturado
+  return match ? match[1] : null;
+}
+
 
 const readAndLogHtmlFile = async (fileName, exceptionOld) => {
   try {
@@ -156,6 +166,7 @@ const readAndLogHtmlFile = async (fileName, exceptionOld) => {
     const searchString6 = '<td class="coeff">';
     const searchString7 = '<span class="minor">';
     const searchString7part2 = "</span>";
+    const searchString8 = '<div class="d-inline-flex align-items-center'
     let mensagens = [];
 
     temp = {};
@@ -214,6 +225,17 @@ const readAndLogHtmlFile = async (fileName, exceptionOld) => {
           temp["fazer1"] = lineTemp;
         } else {
           temp["fazer2"] = lineTemp;
+        }
+      }
+
+      if (line.trim().includes(searchString8)) {
+        const href = extractHref(line);
+        const fixeUrl = "https://pt.surebet.com"
+        if (line.trim().includes("/nav/surebet/prong/0/")) { 
+          temp["url1"]= await buscarUrl(fixeUrl + href)
+        } 
+        if (line.trim().includes("/nav/surebet/prong/1/")) { 
+          temp["url2"]= await buscarUrl(fixeUrl + href)
         }
       }
 
