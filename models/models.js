@@ -5,7 +5,7 @@ const readAndLogHtmlFile = require("./buscarOLDS");
 const fetchAndSaveHtml = require("./criarHTML");
 const WEBHOOK_URL = `${process.env.URL}/bot${process.env.BOT_TOKEN}`;
 
-async function processAllCacheEntries(bot, listaAtual) {
+async function excluirMensagens(bot, listaAtual) {
   try {
     let cursor = '0';
     let keys = [];
@@ -173,23 +173,11 @@ async function grupoFreeExecutar(bot) {
   }
 }
 
-
-async function excluirMensagens(bot, listAtual) {
-  try {
-    await processAllCacheEntries(bot, listAtual)
-  } catch (error) {
-    console.log(error);
-  }
-}
-
 module.exports = {
   setWebhook,
   getWebhookInfo,
-  getStringFromCache,
-  cacheString,
   getCurrentTime,
   grupoPrivadoExecutar,
   grupoVendaExecutar,
   grupoFreeExecutar,
-  excluirMensagens
 };
