@@ -78,7 +78,7 @@ async function readAndLogMessages(mensagens, bot, chatId) {
 
         let key = `${mensagens[index]["bet1"]})-${mensagens[index]["fazer1"]} ${mensagens[index]["ganho"]}`;
         if (
-          (await getStringFromCache(Buffer.from(key).toString("base64")), chatId) ==
+          (await getStringFromCache(Buffer.from(key).toString("base64"), chatId)) ==
           false
         ) {
           bot.telegram.sendMessage(chatId, string);
@@ -145,7 +145,6 @@ module.exports = {
   getStringFromCache,
   cacheString,
   getCurrentTime,
-  readAndLogMessages,
   grupoPrivadoExecutar,
   grupoVendaExecutar,
   grupoFreeExecutar
