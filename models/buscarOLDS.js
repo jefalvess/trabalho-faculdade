@@ -228,7 +228,7 @@ const readAndLogHtmlFile = async (fileName) => {
         if (loopTemp > 0) {
           let strWithoutPercentage = temp.ganho.replace(/%/g, "");
           let result = strWithoutPercentage.replace(/,/g, ".");
-          if (result > 5 || temp.data < await timeStempHaha(12)) {
+          if (result > 5 || temp.data < await timeStempHaha(6)) {
             mensagens.push(temp);
           }
           temp = {};
@@ -239,7 +239,7 @@ const readAndLogHtmlFile = async (fileName) => {
     if (temp["jogo"]) {
       let strWithoutPercentage = temp.ganho.replace(/%/g, "");
       let result = strWithoutPercentage.replace(/,/g, ".");
-      if (result > 5 || temp.data < await timeStempHaha(12)) {
+      if (result > 5 || temp.data < await timeStempHaha(6)) {
         mensagens.push(temp);
       }
     }
