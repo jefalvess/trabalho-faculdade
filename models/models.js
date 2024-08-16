@@ -4,7 +4,7 @@ const redis = require("./redisClient");
 const readAndLogHtmlFile = require("./buscarOLDS");
 const fetchAndSaveHtml = require("./criarHTML");
 const WEBHOOK_URL = `${process.env.URL}/bot${process.env.BOT_TOKEN}`;
-const chatId2 = parseInt(-4279611369);
+const chatId = parseInt(process.env.GRUPO_ID);
 
 async function getStringFromCache(key) {
   try {
