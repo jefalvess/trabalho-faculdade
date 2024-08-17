@@ -174,7 +174,7 @@ async function grupoPrivadoExecutar(bot) {
     const url = process.env.URL_GRUPO_PRIVADO;
     const fileName = "index1.html";
     await fetchAndSaveHtml(url, fileName);
-    const mensagens = await readAndLogHtmlFile(fileName, 8);
+    const mensagens = await readAndLogHtmlFile(fileName, 5);
     const chatId = parseInt(process.env.GRUPO_ID);
     const keys = await readAndLogMessages(mensagens, bot, chatId);
     // await excluirMensagens(bot, keys, chatId)
@@ -188,7 +188,7 @@ async function grupoVendaExecutar(bot) {
     const url = process.env.URL_GRUPO_VENDA;
     const fileName = "index2.html";
     await fetchAndSaveHtml(url, fileName);
-    const mensagens = await readAndLogHtmlFile(fileName, 8);
+    const mensagens = await readAndLogHtmlFile(fileName, 7);
     const chatId = parseInt(process.env.GRUPO_ID_VENDA);
     const keys = await readAndLogMessages(mensagens, bot, chatId);
     // await excluirMensagens(bot, keys, chatId)
@@ -201,7 +201,7 @@ async function grupoFreeExecutar(bot) {
   try {
     if ((await getExecutiFree()) === false) {
       const fileName = "index2.html";
-      const mensagens = await readAndLogHtmlFile(fileName, 8);
+      const mensagens = await readAndLogHtmlFile(fileName, 7);
       const chatId = parseInt(process.env.GRUPO_ID_FREE);
       if (mensagens.length > 0) {
         cacheFree();
