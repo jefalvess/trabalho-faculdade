@@ -147,7 +147,7 @@ async function grupoPrivadoExecutar(bot) {
     const url = process.env.URL_GRUPO_PRIVADO;
     const fileName = "index1.html"
     await fetchAndSaveHtml(url, fileName);
-    const mensagens = await readAndLogHtmlFile(fileName, 6);
+    const mensagens = await readAndLogHtmlFile(fileName, 8);
     const chatId = parseInt(process.env.GRUPO_ID);
     const keys = await readAndLogMessages(mensagens, bot, chatId);
     // await excluirMensagens(bot, keys, chatId)
