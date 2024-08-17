@@ -1,6 +1,7 @@
 const cron = require("node-cron");
 const { grupoPrivadoExecutar, grupoVendaExecutar, grupoFreeExecutar } = require("./models/models");
 const job1 = (bot) => {
+  grupoPrivadoExecutar(bot);
   cron.schedule(
     "* 8-23 * * *",
     () => {
