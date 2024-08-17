@@ -7,31 +7,50 @@ const WEBHOOK_URL = `${process.env.URL}/bot${process.env.BOT_TOKEN}`;
 
 async function excluirMensagens(bot, listaAtual, chatIdOficial) {
   try {
-    let cursor = '0';
+    let cursor = "0";
     let keys = [];
     do {
       const reply = await redis.scan(cursor);
-      keys = reply['keys']
-    } while (cursor !== '0');
+      keys = reply["keys"];
+    } while (cursor !== "0");
     for (const key of keys) {
-      if (listaAtual.indexOf(key.split(":")[1]) === -1) { 
+      if (listaAtual.indexOf(key.split(":")[1]) === -1) {
         try {
           const value = await redis.get(key);
-          const data = value.split("--")
-          let message_id = parseInt(data[0])
+          const data = value.split("--");
+          let message_id = parseInt(data[0]);
           let chatId = parseInt(data[1]);
           chatId = -chatId;
-          if (chatIdOficial === chatId) { 
+          if (chatIdOficial === chatId) {
             await bot.telegram.deleteMessage(chatId, message_id);
             await redis.del(key);
           }
         } catch (err) {
           console.error(`Erro ao obter o valor para a chave ${key}:`, err);
         }
-    }
+      }
     }
   } catch (err) {
     console.error("Erro ao buscar e processar entradas do cache:", err);
+  }
+}
+
+async function getExecutiFree() {
+  try {
+    const value = await redis.get("free");
+    return value === null ? false : value;
+  } catch (err) {
+    console.error("Erro ao buscar string do cache:", err);
+    return false;
+  }
+}
+
+async function cacheFree() {
+  try {
+    const ttl = 60 * 60 * 6;
+    await redis.set("free", "FREE", "EX", ttl);
+  } catch (err) {
+    console.error("Erro ao inserir string no cache:", err);
   }
 }
 
@@ -100,27 +119,35 @@ async function readAndLogMessages(mensagens, bot, chatId) {
           let oldGanha = await calculadora(
             mensagens[index]["old1"],
             mensagens[index]["old2"],
-            mensagens[index]["ganho"],
+            mensagens[index]["ganho"]
           );
           let string2 = `Data do jogo: ${mensagens[index]["data"]}\n`;
-          let string3 = `Jogo: ${mensagens[index]["jogo"]} | ${mensagens[index]["modalidade"]}\n`
-          let string4 = `Aposte: (<a href="${mensagens[index]["url1"]}">${mensagens[index].bet1}</a>) ${mensagens[index]["fazer1"]} -> ${mensagens[index]["old1"]}\n`
-          let string5 = `Aposte: (<a href="${mensagens[index]["url2"]}">${mensagens[index].bet2}</a>) ${mensagens[index]["fazer2"]} -> ${mensagens[index]["old2"]}\n`
-          let string6 = `${oldGanha}`
+          let string3 = `Jogo: ${mensagens[index]["jogo"]} | ${mensagens[index]["modalidade"]}\n`;
+          let string4 = `Aposte: (<a href="${mensagens[index]["url1"]}">${mensagens[index].bet1}</a>) ${mensagens[index]["fazer1"]} -> ${mensagens[index]["old1"]}\n`;
+          let string5 = `Aposte: (<a href="${mensagens[index]["url2"]}">${mensagens[index].bet2}</a>) ${mensagens[index]["fazer2"]} -> ${mensagens[index]["old2"]}\n`;
+          let string6 = `${oldGanha}`;
 
           let string = `${string2}\n${string3}\n${string4}\n${string5}\n${string6}`;
 
           let key = `${mensagens[index]["bet1"]})-${mensagens[index]["fazer1"]} ${mensagens[index]["ganho"]}`;
           keysAtualmente.push(Buffer.from(key).toString("base64"));
-          
+
           if (
-            (await getStringFromCache(Buffer.from(key).toString("base64"), chatId)) ===
-            false
+            (await getStringFromCache(
+              Buffer.from(key).toString("base64"),
+              chatId
+            )) === false
           ) {
-            const sentMessage = await bot.telegram.sendMessage(chatId, string, { parse_mode: 'HTML' });
+            const sentMessage = await bot.telegram.sendMessage(chatId, string, {
+              parse_mode: "HTML",
+            });
 
             const messageId = sentMessage.message_id;
-            await cacheString(Buffer.from(key).toString("base64"), `${String(messageId)}-${chatId}`, chatId);
+            await cacheString(
+              Buffer.from(key).toString("base64"),
+              `${String(messageId)}-${chatId}`,
+              chatId
+            );
           }
           index++;
         } else {
@@ -145,7 +172,7 @@ async function readAndLogMessages(mensagens, bot, chatId) {
 async function grupoPrivadoExecutar(bot) {
   try {
     const url = process.env.URL_GRUPO_PRIVADO;
-    const fileName = "index1.html"
+    const fileName = "index1.html";
     await fetchAndSaveHtml(url, fileName);
     const mensagens = await readAndLogHtmlFile(fileName, 8);
     const chatId = parseInt(process.env.GRUPO_ID);
@@ -159,7 +186,7 @@ async function grupoPrivadoExecutar(bot) {
 async function grupoVendaExecutar(bot) {
   try {
     const url = process.env.URL_GRUPO_VENDA;
-    const fileName = "index2.html"
+    const fileName = "index2.html";
     await fetchAndSaveHtml(url, fileName);
     const mensagens = await readAndLogHtmlFile(fileName, 8);
     const chatId = parseInt(process.env.GRUPO_ID_VENDA);
@@ -170,13 +197,17 @@ async function grupoVendaExecutar(bot) {
   }
 }
 
-
 async function grupoFreeExecutar(bot) {
   try {
-    const fileName = "index2.html"
-    const mensagens = await readAndLogHtmlFile(fileName, 8);
-    const chatId = parseInt(process.env.GRUPO_ID_FREE);
-    await readAndLogMessages(mensagens, bot, chatId);
+    if ((await getExecutiFree()) === false) {
+      const fileName = "index2.html";
+      const mensagens = await readAndLogHtmlFile(fileName, 8);
+      const chatId = parseInt(process.env.GRUPO_ID_FREE);
+      if (mensagens.length > 0) {
+        cacheFree();
+      }
+      await readAndLogMessages(mensagens, bot, chatId);
+    }
   } catch (error) {
     console.log(error);
   }
