@@ -99,10 +99,9 @@ async function readAndLogMessages(mensagens, bot, chatId) {
         if (index < mensagens.length) {
           let oldGanha = await calculadora(
             mensagens[index]["old1"],
-            mensagens[index]["old2"],
-            mensagens[index]["ganho"]
+            mensagens[index]["old2"]
           );
-          let string = `Data do jogo: ${mensagens[index]["data"]}\nJogo: ${mensagens[index]["jogo"]} | ${mensagens[index]["modalidade"]}\n\nAposte: (${mensagens[index].bet1}) ${mensagens[index]["fazer1"]} -> ${mensagens[index]["old1"]}\n\nAposte: (${mensagens[index]["bet2"]}) ${mensagens[index]["fazer2"]} -> ${mensagens[index]["old2"]}\n\n\n${oldGanha}\n\n [Casa 1](${mensagens[index]["url1"]})\n [Casa 2](${mensagens[index]["url2"]})`;
+          let string = `(${ mensagens[index]["ganho"]})\nData do jogo: ${mensagens[index]["data"]}\nJogo: ${mensagens[index]["jogo"]} | ${mensagens[index]["modalidade"]}\n\nAposte: (${mensagens[index].bet1}) ${mensagens[index]["fazer1"]} -> ${mensagens[index]["old1"]}\n\nAposte: (${mensagens[index]["bet2"]}) ${mensagens[index]["fazer2"]} -> ${mensagens[index]["old2"]}\n\n[Casa 1](${mensagens[index]["url1"]})\n[Casa 2](${mensagens[index]["url2"]})\n\n${oldGanha}`;
 
           let key = `${mensagens[index]["bet1"]})-${mensagens[index]["fazer1"]} ${mensagens[index]["ganho"]}`;
           keysAtualmente.push(Buffer.from(key).toString("base64"));
