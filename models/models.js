@@ -99,9 +99,16 @@ async function readAndLogMessages(mensagens, bot, chatId) {
         if (index < mensagens.length) {
           let oldGanha = await calculadora(
             mensagens[index]["old1"],
-            mensagens[index]["old2"]
+            mensagens[index]["old2"],
+            mensagens[index]["ganho"],
           );
-          let string = `(${ mensagens[index]["ganho"]})\nData do jogo: ${mensagens[index]["data"]}\nJogo: ${mensagens[index]["jogo"]} | ${mensagens[index]["modalidade"]}\n\nAposte: (${mensagens[index].bet1}) ${mensagens[index]["fazer1"]} -> ${mensagens[index]["old1"]}\n\nAposte: (${mensagens[index]["bet2"]}) ${mensagens[index]["fazer2"]} -> ${mensagens[index]["old2"]}\n\n[Casa 1](${mensagens[index]["url1"]})\n[Casa 2](${mensagens[index]["url2"]})\n\n${oldGanha}`;
+          let string2 = `Data do jogo: ${mensagens[index]["data"]}\n`;
+          let string3 = `Jogo: ${mensagens[index]["jogo"]} | ${mensagens[index]["modalidade"]}\n`
+          let string4 = `Aposte: (<a href="${mensagens[index]["url1"]}">${mensagens[index].bet1}</a>) ${mensagens[index]["fazer1"]} -> ${mensagens[index]["old1"]}\n`
+          let string5 = `Aposte: (<a href="${mensagens[index]["url2"]}">${mensagens[index].bet2}</a>) ${mensagens[index]["fazer2"]} -> ${mensagens[index]["old2"]}\n`
+          let string6 = `${oldGanha}`
+
+          let string = `${string2}\n${string3}\n${string4}\n${string5}\n${string6}`;
 
           let key = `${mensagens[index]["bet1"]})-${mensagens[index]["fazer1"]} ${mensagens[index]["ganho"]}`;
           keysAtualmente.push(Buffer.from(key).toString("base64"));
@@ -110,7 +117,8 @@ async function readAndLogMessages(mensagens, bot, chatId) {
             (await getStringFromCache(Buffer.from(key).toString("base64"), chatId)) ===
             false
           ) {
-            const sentMessage = await bot.telegram.sendMessage(chatId, string);
+            const sentMessage = await bot.telegram.sendMessage(chatId, string, { parse_mode: 'HTML' });
+
             const messageId = sentMessage.message_id;
             await cacheString(Buffer.from(key).toString("base64"), `${String(messageId)}-${chatId}`, chatId);
           }
