@@ -140,6 +140,7 @@ async function readAndLogMessages(mensagens, bot, chatId) {
           ) {
             const sentMessage = await bot.telegram.sendMessage(chatId, string, {
               parse_mode: "HTML",
+              disable_web_page_preview: true,
             });
 
             const messageId = sentMessage.message_id;
