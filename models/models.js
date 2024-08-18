@@ -211,11 +211,11 @@ async function grupoFreeExecutar(bot) {
     } else {
       const chatId = parseInt(process.env.GRUPO_ID_FREE);
       let string = `
-            <b>Mais uma OLD encontrada!</b><br><br>
-            Como você está no grupo <b>FREE</b>, não terá acesso.<br>
-            Usuários do grupo FREE recebem apenas <b>uma OLD a cada 6 horas</b>.<br><br>
-            <i>Contrate o grupo VIP</i> e tenha <b>OLDs ilimitadas</b> durante todo o dia! 
-      `;
+      <b>Mais uma OLD encontrada!</b>\n\n
+      Como você está no grupo <b>FREE</b>, não terá acesso.\n
+      Usuários do grupo FREE recebem apenas <b>uma OLD a cada 6 horas</b>.\n\n
+      <i>Contrate o grupo VIP</i> e tenha <b>OLDs ilimitadas</b> durante todo o dia! 
+    `;
 
       const sentMessage = await bot.telegram.sendMessage(chatId, string, {
         parse_mode: "HTML",
