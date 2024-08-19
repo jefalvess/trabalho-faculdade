@@ -7,7 +7,7 @@ const {
 
 const jobGrupoPrivado = (bot) => {
   cron.schedule(
-    "*/15 * 8-23 * * *",
+    "15 * 8-23 * * *",
     () => {
       grupoPrivadoExecutar(bot);
     },
@@ -21,7 +21,7 @@ const jobGrupoPrivado = (bot) => {
 const jobGrupoVendaAndFree = async (bot) => {
   grupoVendaExecutar(bot);
   cron.schedule(
-    "7 * 8-23 * * *",
+    "45 * 8-23 * * *",
     async () => {
       await grupoVendaExecutar(bot);
       grupoFreeExecutar(bot)
