@@ -226,7 +226,7 @@ async function grupoFreeExecutar(bot) {
       if (mensagens.length > 0) {
         cacheFree();
       }
-      await readAndLogMessages(mensagens, bot, chatId);
+      await readAndLogMessages([mensagens[0]], bot, chatId);
     } else if (await getExecuteFreeAlert() === false)  {
       const chatId = parseInt(process.env.GRUPO_ID_FREE);
       let string = `
