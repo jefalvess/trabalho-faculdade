@@ -230,7 +230,7 @@ async function grupoFreeExecutar(bot) {
     } else if (await getExecuteFreeAlert() === false)  {
       const chatId = parseInt(process.env.GRUPO_ID_FREE);
       let string = `
-        <b>Mais uma Odd encontrada!</b>\n
+        <b>Temos varias Odds encontradas!</b>\n
         Como você está no grupo <b>FREE</b>, não terá acesso.
         Usuários do grupo FREE recebem apenas <b>uma OLD a cada 6 horas</b>.\n
         <i>Contrate o grupo VIP</i> e tenha <b>ODDs</b> ilimitadas durante todo o dia! 
