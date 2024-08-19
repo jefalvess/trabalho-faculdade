@@ -35,9 +35,19 @@ async function excluirMensagens(bot, listaAtual, chatIdOficial) {
   }
 }
 
-async function getExecutiFree() {
+async function getExecuteFree() {
   try {
     const value = await redis.get("free");
+    return value === null ? false : value;
+  } catch (err) {
+    console.error("Erro ao buscar string do cache:", err);
+    return false;
+  }
+}
+
+async function getExecuteFreeAlert() {
+  try {
+    const value = await redis.get("free-alert");
     return value === null ? false : value;
   } catch (err) {
     console.error("Erro ao buscar string do cache:", err);
@@ -49,6 +59,15 @@ async function cacheFree() {
   try {
     const ttl = 60 * 60 * 6;
     await redis.set("free", "FREE", "EX", ttl);
+  } catch (err) {
+    console.error("Erro ao inserir string no cache:", err);
+  }
+}
+
+async function cacheFreeAlert() {
+  try {
+    const ttl = 60 * 60 * 6;
+    await redis.set("free-alert", "FREE-ALERT", "EX", ttl);
   } catch (err) {
     console.error("Erro ao inserir string no cache:", err);
   }
@@ -200,7 +219,7 @@ async function grupoVendaExecutar(bot) {
 
 async function grupoFreeExecutar(bot) {
   try {
-    if ((await getExecutiFree()) === false) {
+    if ((await getExecuteFree()) === false) {
       const fileName = "index2.html";
       const mensagens = await readAndLogHtmlFile(fileName, 10);
       const chatId = parseInt(process.env.GRUPO_ID_FREE);
@@ -208,19 +227,21 @@ async function grupoFreeExecutar(bot) {
         cacheFree();
       }
       await readAndLogMessages(mensagens, bot, chatId);
-    } else {
+    } else if (await getExecuteFreeAlert() === false)  {
       const chatId = parseInt(process.env.GRUPO_ID_FREE);
       let string = `
-      <b>Mais uma Odd encontrada!</b>\n
-      Como você está no grupo <b>FREE</b>, não terá acesso.
-      Usuários do grupo FREE recebem apenas <b>uma OLD a cada 6 horas</b>.\n
-      <i>Contrate o grupo VIP</i> e tenha <b>ODDs</b> ilimitadas durante todo o dia! 
-    `;
+        <b>Mais uma Odd encontrada!</b>\n
+        Como você está no grupo <b>FREE</b>, não terá acesso.
+        Usuários do grupo FREE recebem apenas <b>uma OLD a cada 6 horas</b>.\n
+        <i>Contrate o grupo VIP</i> e tenha <b>ODDs</b> ilimitadas durante todo o dia! 
+      `;
 
       const sentMessage = await bot.telegram.sendMessage(chatId, string, {
         parse_mode: "HTML",
         disable_web_page_preview: true,
       });
+
+      cacheFreeAlert()
     }
   } catch (error) {
     console.log(error);
