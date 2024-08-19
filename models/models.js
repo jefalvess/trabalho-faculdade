@@ -219,7 +219,7 @@ async function grupoVendaExecutar(bot) {
 
 async function grupoFreeExecutar(bot) {
   try {
-    if ((await getExecuteFree()) === false) {
+    if (await getExecuteFree() === false) {
       const fileName = "index2.html";
       const mensagens = await readAndLogHtmlFile(fileName, 10);
       const chatId = parseInt(process.env.GRUPO_ID_FREE);
