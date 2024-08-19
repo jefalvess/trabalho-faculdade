@@ -232,7 +232,7 @@ async function grupoFreeExecutar(bot) {
       let string = `
         <b>Temos varias Odds encontradas!</b>\n
         Como você está no grupo <b>FREE</b>, não terá acesso.
-        Usuários do grupo FREE recebem apenas <b>uma OLD a cada 6 horas</b>.\n
+        Usuários do grupo FREE recebem apenas <b>uma ODD a cada 6 horas</b>.\n
         <i>Contrate o grupo VIP</i> e tenha <b>ODDs</b> ilimitadas durante todo o dia! 
       `;
 
