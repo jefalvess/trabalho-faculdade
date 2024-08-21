@@ -33,9 +33,22 @@ const jobGrupoVendaAndFree = async (bot) => {
   );
 };
 
+
+const getHost = async (bot) => {
+  // Configura um cron job para ser executado a cada minuto (você pode ajustar a expressão cron)
+  cron.schedule('*/5 * * * * *', async () => {
+    try {
+        await axios.get('https://job-ddg1.onrender.com/test');
+      } catch (error) {
+        
+      }
+  });
+};
+
 const callJobs = (bot) => {
   jobGrupoPrivado(bot);
   jobGrupoVendaAndFree(bot)
+  getHost(bot)
 };
 
 module.exports = callJobs;
