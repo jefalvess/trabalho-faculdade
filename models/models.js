@@ -57,8 +57,7 @@ async function getExecuteFreeAlert() {
 
 async function cacheFree() {
   try {
-    const ttl = 60 * 60 * 6;
-    await redis.set("free", "FREE", "EX", ttl);
+    await redis.set("free", "FREE", {EX: 21600});
   } catch (err) {
     console.error("Erro ao inserir string no cache:", err);
   }
@@ -66,8 +65,7 @@ async function cacheFree() {
 
 async function cacheFreeAlert() {
   try {
-    const ttl = 60 * 60 * 6;
-    await redis.set("free-alert", "FREE-ALERT", "EX", ttl);
+    await redis.set("free-alert", "FREE", {EX: 21600});
   } catch (err) {
     console.error("Erro ao inserir string no cache:", err);
   }
@@ -89,8 +87,7 @@ async function cacheString(key, value, chatId) {
   try {
     const chatIdString = String(chatId); // Converter chatId para string
     const fullKey = `cache-${chatIdString}:${key}`; // Prefixo de chave com chatId e key
-    const ttl = 28800; // 8 horas em segundos
-    await redis.set(fullKey, value, "EX", ttl);
+    await redis.set(fullKey, value, {EX: 21600});
   } catch (err) {
     console.error("Erro ao inserir string no cache:", err);
   }
@@ -184,7 +181,6 @@ async function readAndLogMessages(mensagens, bot, chatId) {
       }
     } catch (error) {
       console.log("erro ao enviar dados");
-      reject(error); // Rejeita a Promise em caso de erro
     }
   });
 }

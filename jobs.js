@@ -19,7 +19,6 @@ const jobGrupoPrivado = (bot) => {
 };
 
 const jobGrupoVendaAndFree = async (bot) => {
-  grupoVendaExecutar(bot);
   cron.schedule(
     "45 * 8-23 * * *",
     async () => {
