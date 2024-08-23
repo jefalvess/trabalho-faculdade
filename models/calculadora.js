@@ -25,9 +25,13 @@ function calcularApostas(odd1, odd2) {
 
 
 const calcularPrincipal = async (old1, old2, perc) => {
+  try { 
   const resultado = calcularApostas(old1, old2);
   const string = `Aposta 1: ${resultado.aposta1} - Aposta 2: ${resultado.aposta2}\nLucro: ${resultado.lucroGarantido} - Perc(${perc})`
   return string
+  } catch (error) { 
+    throw new Error("Erro no calculo");
+  }
 };
 
 module.exports = calcularPrincipal;

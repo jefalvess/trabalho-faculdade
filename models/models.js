@@ -57,7 +57,7 @@ async function getExecuteFreeAlert() {
 
 async function cacheFree() {
   try {
-    await redis.set("free", "FREE", {EX: 21600});
+    await redis.set("free", "FREE", { EX: 21600 });
   } catch (err) {
     console.error("Erro ao inserir string no cache:", err);
   }
@@ -65,7 +65,7 @@ async function cacheFree() {
 
 async function cacheFreeAlert() {
   try {
-    await redis.set("free-alert", "FREE", {EX: 21600});
+    await redis.set("free-alert", "FREE", { EX: 21600 });
   } catch (err) {
     console.error("Erro ao inserir string no cache:", err);
   }
@@ -87,7 +87,7 @@ async function cacheString(key, value, chatId) {
   try {
     const chatIdString = String(chatId); // Converter chatId para string
     const fullKey = `cache-${chatIdString}:${key}`; // Prefixo de chave com chatId e key
-    await redis.set(fullKey, value, {EX: 21600});
+    await redis.set(fullKey, value, { EX: 21600 });
   } catch (err) {
     console.error("Erro ao inserir string no cache:", err);
   }
@@ -131,7 +131,7 @@ async function readAndLogMessages(mensagens, bot, chatId) {
       let keysAtualmente = [];
 
       const intervalId = setInterval(async () => {
-        if (index < mensagens.length) {
+        if (index < mensagens.length && mensagens[index]) {
           let oldGanha = await calculadora(
             mensagens[index]["old1"],
             mensagens[index]["old2"],
@@ -166,6 +166,7 @@ async function readAndLogMessages(mensagens, bot, chatId) {
               chatId
             );
           }
+
           index++;
         } else {
           clearInterval(intervalId);
@@ -215,7 +216,9 @@ async function grupoVendaExecutar(bot) {
 
 async function grupoFreeExecutar(bot) {
   try {
-    if (await getExecuteFree() === false) {
+    const response = await getExecuteFree()
+    const response2 = await getExecuteFreeAlert()
+    if (response === false) {
       const fileName = "index2.html";
       const mensagens = await readAndLogHtmlFile(fileName, 10);
       const chatId = parseInt(process.env.GRUPO_ID_FREE);
@@ -223,7 +226,7 @@ async function grupoFreeExecutar(bot) {
         cacheFree();
       }
       await readAndLogMessages([mensagens[0]], bot, chatId);
-    } else if (await getExecuteFreeAlert() === false)  {
+    } else if (response2 === false) {
       const chatId = parseInt(process.env.GRUPO_ID_FREE);
       let string = `
         <b>Temos varias Odds encontradas!</b>\n
@@ -237,7 +240,7 @@ async function grupoFreeExecutar(bot) {
         disable_web_page_preview: true,
       });
 
-      cacheFreeAlert()
+      cacheFreeAlert();
     }
   } catch (error) {
     console.log(error);
